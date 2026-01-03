@@ -69,8 +69,10 @@ function generateFooter() {
       <div class="footer-container">
         <div class="footer-content">
           <div class="footer-section footer-brand">
-            <img src="https://drive.google.com/thumbnail?id=17dNi3fIpOWX1bc4kjPTcSWySO2PPVtLS&sz=w2000" alt="Amore Mío" class="footer-logo-img">
-            <h2 class="footer-logo">Amore Mío</h2>
+            <div class="footer-brand-block">
+              <img src="https://drive.google.com/thumbnail?id=17dNi3fIpOWX1bc4kjPTcSWySO2PPVtLS&sz=w2000" alt="Amore Mío" class="footer-logo-img">
+              <h2 class="footer-logo">Amore Mío</h2>
+            </div>
             <p class="footer-tagline">Pasión en cada detalle</p>
           </div>
           

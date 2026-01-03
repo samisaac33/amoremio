@@ -309,11 +309,17 @@ main {
   gap: var(--spacing-sm);
 }
 
+.footer-brand-block {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: var(--spacing-xs);
+}
+
 .footer-logo-img {
-  height: 60px;
+  height: 50px;
   width: auto;
   display: block;
-  margin-bottom: var(--spacing-xs);
 }
 
 .footer-logo {
@@ -323,6 +329,7 @@ main {
   color: #FFFFFF;
   margin: 0;
   padding: 0;
+  line-height: 1;
 }
 
 .footer-tagline {
