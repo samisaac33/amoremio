@@ -945,6 +945,77 @@ main {
 }
 
 /* ========================================
+   MOMENTOS ESPECIALES
+   ======================================== */
+.special-moments {
+  background-color: var(--color-white);
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: var(--spacing-xl) var(--spacing-md);
+}
+
+.section-title {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: var(--spacing-md);
+}
+
+.section-subtitle {
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  color: var(--color-text-light);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.moments-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.moment-item {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+  transition: transform var(--transition-fast);
+}
+
+.moment-item:hover {
+  transform: translateY(-5px);
+}
+
+.moment-item img {
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  object-fit: cover;
+  border-radius: 0;
+  display: block;
+  transition: transform var(--transition-normal), filter var(--transition-normal);
+}
+
+.moment-item:hover img {
+  transform: scale(1.05);
+  filter: brightness(1.1);
+}
+
+.moment-text {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: #333;
+  text-align: center;
+  margin-top: 15px;
+  font-weight: 400;
+}
+
+/* ========================================
    TRUST BAR / BENEFICIOS
    ======================================== */
 .trust-bar {
@@ -1022,6 +1093,18 @@ main {
     width: 100%;
     max-width: 300px;
     padding: 0.9rem 2rem;
+  }
+
+  .moments-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .section-title {
+    font-size: 2rem;
+  }
+
+  .section-subtitle {
+    font-size: 1rem;
   }
 
   .trust-bar-container {
