@@ -186,18 +186,17 @@ function generarMegaMenuContent(categoria, productos) {
     `;
   });
   
-  // Agregar enlace "VER MÁS"
+  html += '</div>';
+  
+  // Agregar enlace "VER MÁS" fuera del grid
   html += `
-    <div class="mega-menu-item mega-menu-ver-mas">
-      <a href="catalogo.html?categoria=${encodeURIComponent(categoria)}">
-        <div class="ver-mas-content">
-          <span>VER MÁS</span>
-        </div>
+    <div class="mega-menu-ver-mas">
+      <a href="catalogo.html?categoria=${encodeURIComponent(categoria)}" class="ver-mas-content">
+        VER MÁS
       </a>
     </div>
   `;
   
-  html += '</div>';
   return html;
 }
 
@@ -249,6 +248,7 @@ if (document.readyState === 'loading') {
     injectGlobalComponents();
     setTimeout(() => {
       inicializarMegaMenu();
+      cargarProductosDestacados();
     }, 100);
   });
 } else {
@@ -256,7 +256,117 @@ if (document.readyState === 'loading') {
   injectGlobalComponents();
   setTimeout(() => {
     inicializarMegaMenu();
+    cargarProductosDestacados();
   }, 100);
+}
+
+/**
+ * Formatear precio
+ */
+function formatearPrecio(precio) {
+  if (!precio) return '$0.00';
+  const numPrecio = typeof precio === 'string' ? parseFloat(precio) : precio;
+  if (isNaN(numPrecio)) return '$0.00';
+  return `$${numPrecio.toFixed(2)}`;
+}
+
+/**
+ * Crear tarjeta de producto (compartida con catalogo.js)
+ */
+function crearTarjetaProductoHTML(producto, index) {
+  const disponible = producto.Disponible !== false;
+  const tieneEtiqueta = producto.Etiqueta && producto.Etiqueta.trim() !== '';
+  const claseAgotado = !disponible ? 'agotado' : '';
+  const precio = formatearPrecio(producto.Precio);
+
+  return `
+    <div class="product-card ${claseAgotado}" data-producto-index="${index}">
+      <div class="product-image-container">
+        <img 
+          src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
+          alt="${producto.Nombre || 'Producto'}"
+          class="product-image"
+          loading="lazy"
+        >
+        ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
+      </div>
+      <div class="product-info">
+        <h3 class="product-name">${producto.Nombre || 'Sin nombre'}</h3>
+        <div class="product-footer">
+          <span class="product-price">${precio}</span>
+          <button 
+            class="product-btn ${!disponible ? 'disabled' : ''}"
+            ${!disponible ? 'disabled' : ''}
+            ${!disponible ? 'aria-disabled="true"' : ''}
+          >
+            ${disponible ? 'Comprar' : 'Agotado'}
+          </button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+/**
+ * Agregar producto al carrito (compartida)
+ */
+function agregarAlCarritoGlobal(producto) {
+  try {
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    carrito.push(producto);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+    // Actualizar contador si existe la función
+    if (typeof updateCarritoCount === 'function') {
+      updateCarritoCount();
+    }
+    
+    // Redirigir a carrito
+    window.location.href = 'carrito.html';
+  } catch (error) {
+    console.error('Error al agregar al carrito:', error);
+    alert('Error al agregar el producto al carrito');
+  }
+}
+
+/**
+ * Cargar y renderizar productos destacados
+ */
+async function cargarProductosDestacados() {
+  const featuredGrid = document.querySelector('.featured-grid');
+  if (!featuredGrid) return;
+
+  try {
+    // Cargar productos
+    const productos = await cargarProductosParaMegaMenu();
+    
+    if (productos.length === 0) {
+      featuredGrid.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles</p>';
+      return;
+    }
+
+    // Obtener los primeros 4 productos (más vendidos simulados)
+    const productosDestacados = productos.slice(0, 4);
+    
+    // Renderizar productos
+    featuredGrid.innerHTML = productosDestacados.map((producto, index) => 
+      crearTarjetaProductoHTML(producto, index)
+    ).join('');
+
+    // Agregar event listeners a los botones de compra
+    featuredGrid.querySelectorAll('.product-btn:not(.disabled)').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const card = this.closest('.product-card');
+        const productoIndex = parseInt(card.dataset.productoIndex);
+        const producto = productosDestacados[productoIndex];
+        agregarAlCarritoGlobal(producto);
+      });
+    });
+
+  } catch (error) {
+    console.error('Error al cargar productos destacados:', error);
+    featuredGrid.innerHTML = '<p class="mensaje-vacio">Error al cargar productos</p>';
+  }
 }
 
 // Función para actualizar el contador del carrito (disponible globalmente)
