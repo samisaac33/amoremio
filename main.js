@@ -345,8 +345,8 @@ async function cargarProductosDestacados() {
       return;
     }
 
-    // Obtener los primeros 4 productos (más vendidos simulados)
-    const productosDestacados = productos.slice(0, 4);
+    // Obtener más productos para el carrusel (al menos 6-8)
+    const productosDestacados = productos.slice(0, Math.max(8, productos.length));
     
     // Renderizar productos
     featuredGrid.innerHTML = productosDestacados.map((producto, index) => 
@@ -363,10 +363,40 @@ async function cargarProductosDestacados() {
       });
     });
 
+    // Inicializar carrusel
+    inicializarCarruselDestacados();
+
   } catch (error) {
     console.error('Error al cargar productos destacados:', error);
     featuredGrid.innerHTML = '<p class="mensaje-vacio">Error al cargar productos</p>';
   }
+}
+
+/**
+ * Inicializar carrusel de productos destacados
+ */
+function inicializarCarruselDestacados() {
+  const featuredGrid = document.querySelector('.featured-grid');
+  const prevBtn = document.querySelector('.carousel-btn.prev-btn');
+  const nextBtn = document.querySelector('.carousel-btn.next-btn');
+
+  if (!featuredGrid || !prevBtn || !nextBtn) return;
+
+  const scrollAmount = 330; // 300px (ancho tarjeta) + 30px (gap)
+
+  nextBtn.addEventListener('click', function() {
+    featuredGrid.scrollBy({
+      left: scrollAmount,
+      behavior: 'smooth'
+    });
+  });
+
+  prevBtn.addEventListener('click', function() {
+    featuredGrid.scrollBy({
+      left: -scrollAmount,
+      behavior: 'smooth'
+    });
+  });
 }
 
 // Función para actualizar el contador del carrito (disponible globalmente)
