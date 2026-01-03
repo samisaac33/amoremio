@@ -21,44 +21,36 @@ function getCarritoCount() {
  * @returns {string} HTML del Navbar
  */
 function generateNavbar() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
   const carritoCount = getCarritoCount();
   
-  const navItems = [
-    { href: 'index.html', text: 'Inicio' },
-    { href: 'catalogo.html', text: 'Catálogo' },
-    { href: 'nosotros.html', text: 'Nosotros' },
-    { href: 'contacto.html', text: 'Contacto' }
+  const menuItems = [
+    { text: 'Cumpleaños', categoria: 'Cumpleaños' },
+    { text: 'Aniversario', categoria: 'Aniversario' },
+    { text: 'Condolencias', categoria: 'Condolencias' }
   ];
 
-  // Generar los items del menú
-  const menuItems = navItems.map(item => {
-    const isActive = item.href === currentPage ? 'class="active"' : '';
-    return `<li><a href="${item.href}" ${isActive}>${item.text}</a></li>`;
-  }).join('');
+  const menuLinks = menuItems.map(item => 
+    `<li><a href="#" class="menu-link" data-categoria="${item.categoria}">${item.text}</a></li>`
+  ).join('');
 
   return `
     <header class="navbar">
-      <div class="navbar-row navbar-row-1">
-        <div class="navbar-container">
-          <a href="index.html" class="navbar-logo">Amore Mío</a>
-          <div class="navbar-search">
-            <input type="text" placeholder="Buscar..." class="search-input" id="searchInput">
+      <div class="navbar-container">
+        <a href="index.html" class="navbar-logo">Amore Mío</a>
+        <nav class="navbar-nav">
+          <ul class="navbar-menu" id="navbarMenu">
+            ${menuLinks}
+          </ul>
+          <div class="mega-menu-dropdown" id="megaMenu">
+            <div class="mega-menu-content" id="megaMenuContent">
+              <!-- Contenido se inyecta dinámicamente -->
+            </div>
           </div>
-          <a href="carrito.html" class="navbar-cart">
-            <i class="fas fa-shopping-bag"></i>
-            ${carritoCount > 0 ? `<span class="cart-count">${carritoCount}</span>` : ''}
-          </a>
-        </div>
-      </div>
-      <div class="navbar-row navbar-row-2">
-        <div class="navbar-container">
-          <nav>
-            <ul class="navbar-menu" id="navbarMenu">
-              ${menuItems}
-            </ul>
-          </nav>
-        </div>
+        </nav>
+        <a href="carrito.html" class="navbar-cart">
+          <i class="fas fa-shopping-bag"></i>
+          ${carritoCount > 0 ? `<span class="cart-count">${carritoCount}</span>` : ''}
+        </a>
       </div>
     </header>
   `;
@@ -128,20 +120,125 @@ function injectGlobalComponents() {
   body.insertAdjacentHTML('beforeend', generateFooter());
 }
 
+// Variable global para productos (compartida con catalogo.js si está disponible)
+let productosGlobales = [];
+
 /**
- * Agrega estilos para el item activo del menú
+ * Cargar productos para el mega menu
  */
-function highlightActiveMenuItem() {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
-  const menuLinks = document.querySelectorAll('.navbar-menu a');
-  
-  menuLinks.forEach(link => {
-    const href = link.getAttribute('href');
-    if (href === currentPage) {
-      link.style.color = 'var(--color-primary)';
-      link.style.fontWeight = '600';
+async function cargarProductosParaMegaMenu() {
+  try {
+    // Intentar obtener productos desde catalogo.js si está disponible
+    if (typeof productos !== 'undefined' && productos.length > 0) {
+      productosGlobales = productos;
+      return productos;
     }
+    
+    // Si ya los cargamos antes, usar esos
+    if (productosGlobales.length > 0) {
+      return productosGlobales;
+    }
+    
+    // Si no hay productos cargados, intentar cargar desde la API
+    const URL_API = 'https://script.google.com/macros/s/AKfycbyfqYVWemnAfC2vbduT0x-VaIKh-D_hV7nOP9wCd1pouAvnepP05bhoj9GNBNMEs0sy/exec';
+    const response = await fetch(URL_API);
+    if (response.ok) {
+      const data = await response.json();
+      productosGlobales = Array.isArray(data) ? data : [];
+      return productosGlobales;
+    }
+  } catch (error) {
+    console.error('Error al cargar productos para mega menu:', error);
+  }
+  return [];
+}
+
+/**
+ * Generar contenido del mega menu
+ */
+function generarMegaMenuContent(categoria, productos) {
+  // Filtrar productos por categoría
+  let productosFiltrados = productos.filter(p => 
+    (p.Categoria || '').toLowerCase() === categoria.toLowerCase()
+  );
+  
+  // Si no hay productos de esa categoría, usar los primeros 5 productos disponibles
+  if (productosFiltrados.length === 0) {
+    productosFiltrados = productos.slice(0, 5);
+  } else {
+    productosFiltrados = productosFiltrados.slice(0, 5);
+  }
+  
+  if (productosFiltrados.length === 0) {
+    return '<p>No hay productos disponibles</p>';
+  }
+  
+  let html = '<div class="mega-menu-grid">';
+  
+  productosFiltrados.forEach(producto => {
+    html += `
+      <div class="mega-menu-item">
+        <a href="catalogo.html?categoria=${encodeURIComponent(categoria)}">
+          <img src="${producto.Imagen || 'https://via.placeholder.com/150x150'}" alt="${producto.Nombre}">
+          <h4>${producto.Nombre || 'Producto'}</h4>
+        </a>
+      </div>
+    `;
   });
+  
+  // Agregar enlace "VER MÁS"
+  html += `
+    <div class="mega-menu-item mega-menu-ver-mas">
+      <a href="catalogo.html?categoria=${encodeURIComponent(categoria)}">
+        <div class="ver-mas-content">
+          <span>VER MÁS</span>
+        </div>
+      </a>
+    </div>
+  `;
+  
+  html += '</div>';
+  return html;
+}
+
+/**
+ * Inicializar mega menu
+ */
+function inicializarMegaMenu() {
+  const menuLinks = document.querySelectorAll('.menu-link');
+  const megaMenu = document.getElementById('megaMenu');
+  const megaMenuContent = document.getElementById('megaMenuContent');
+  
+  if (!megaMenu || !megaMenuContent) return;
+  
+  let productosDisponibles = [];
+  
+  // Cargar productos cuando se necesiten
+  menuLinks.forEach(link => {
+    link.addEventListener('mouseenter', async function(e) {
+      e.preventDefault();
+      const categoria = this.dataset.categoria;
+      
+      // Cargar productos si no están disponibles
+      if (productosDisponibles.length === 0) {
+        productosDisponibles = await cargarProductosParaMegaMenu();
+      }
+      
+      // Generar y mostrar contenido
+      megaMenuContent.innerHTML = generarMegaMenuContent(categoria, productosDisponibles);
+      megaMenu.style.opacity = '1';
+      megaMenu.style.visibility = 'visible';
+    });
+  });
+  
+  // Ocultar al salir del menú
+  const nav = document.querySelector('.navbar-nav');
+  if (nav) {
+    nav.addEventListener('mouseleave', function() {
+      megaMenu.style.opacity = '0';
+      megaMenu.style.visibility = 'hidden';
+    });
+  }
 }
 
 /**
@@ -150,12 +247,16 @@ function highlightActiveMenuItem() {
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', function() {
     injectGlobalComponents();
-    highlightActiveMenuItem();
+    setTimeout(() => {
+      inicializarMegaMenu();
+    }, 100);
   });
 } else {
   // Si el DOM ya está listo, ejecutar inmediatamente
   injectGlobalComponents();
-  highlightActiveMenuItem();
+  setTimeout(() => {
+    inicializarMegaMenu();
+  }, 100);
 }
 
 // Función para actualizar el contador del carrito (disponible globalmente)
