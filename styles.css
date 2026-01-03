@@ -2088,6 +2088,10 @@ main {
   width: 100%;
 }
 
+.checkout-form-main {
+  width: 100%;
+}
+
 .checkout-form {
   background-color: var(--color-white);
   padding: var(--spacing-lg);
@@ -2190,6 +2194,41 @@ main {
   font-weight: 400;
 }
 
+.confirm-order-btn {
+  width: 100%;
+  max-width: 600px;
+  padding: 1.5rem 2.5rem;
+  background-color: #25D366;
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 1.3rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  cursor: pointer;
+  display: inline-block;
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 16px rgba(37, 211, 102, 0.3);
+}
+
+.confirm-order-btn:hover:not(:disabled) {
+  background-color: #20BA5A;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+}
+
+.confirm-order-btn:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.confirm-order-btn:disabled {
+  background-color: #999999;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
 .payment-proceed-btn {
   width: 100%;
   max-width: 500px;
@@ -2242,6 +2281,11 @@ main {
   
   .total-text {
     font-size: 2rem;
+  }
+  
+  .confirm-order-btn {
+    font-size: 1.1rem;
+    padding: 1.3rem 2rem;
   }
   
   .payment-proceed-btn {

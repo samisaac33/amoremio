@@ -1,7 +1,10 @@
 /**
  * CHECKOUT - AMORE MÍO
- * Lógica para el proceso de checkout y validación de formularios
+ * Lógica para el proceso de checkout y envío a Google Sheets
  */
+
+// URL de Google Apps Script
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFe4eBWz0TVTb0bT4be2IReWs1_KtdPUkpDYycUL2E_Amj0i803jF1ViaT2yea7KBoTw/exec';
 
 /**
  * Cargar carrito desde localStorage
@@ -35,9 +38,9 @@ function formatearPrecio(precio) {
 }
 
 /**
- * Cargar total en la página
+ * Cargar total en la página y verificar carrito
  */
-function cargarTotal() {
+function inicializarCheckout() {
   const carrito = cargarCarrito();
   const total = calcularTotal(carrito);
   const totalElement = document.getElementById('checkout-total');
@@ -46,125 +49,94 @@ function cargarTotal() {
     totalElement.textContent = formatearPrecio(total);
   }
   
-  // Si no hay productos, redirigir al catálogo
+  // Si no hay productos, redirigir al inicio
   if (carrito.length === 0) {
-    alert('Tu carrito está vacío. Serás redirigido al catálogo.');
-    window.location.href = 'catalogo.html';
-  }
-}
-
-/**
- * Copiar datos de facturación a envío
- */
-function copiarDatosFacturacion() {
-  const checkbox = document.getElementById('same-as-billing');
-  const billingNombre = document.getElementById('billing-nombre');
-  const billingTelefono = document.getElementById('billing-telefono');
-  const billingDireccion = document.getElementById('billing-direccion');
-  
-  const shippingNombre = document.getElementById('shipping-nombre');
-  const shippingTelefono = document.getElementById('shipping-telefono');
-  const shippingDireccion = document.getElementById('shipping-direccion');
-  
-  if (checkbox && checkbox.checked) {
-    if (billingNombre) shippingNombre.value = billingNombre.value;
-    if (billingTelefono) shippingTelefono.value = billingTelefono.value;
-    if (billingDireccion) shippingDireccion.value = billingDireccion.value;
-  } else {
-    shippingNombre.value = '';
-    shippingTelefono.value = '';
-    shippingDireccion.value = '';
-  }
-}
-
-/**
- * Validar formularios
- */
-function validarFormularios() {
-  const billingForm = document.getElementById('billing-form');
-  const shippingForm = document.getElementById('shipping-form');
-  
-  // Validar formulario de facturación
-  if (!billingForm.checkValidity()) {
-    billingForm.reportValidity();
-    return false;
-  }
-  
-  // Validar formulario de envío
-  if (!shippingForm.checkValidity()) {
-    shippingForm.reportValidity();
-    return false;
-  }
-  
-  return true;
-}
-
-/**
- * Proceder al pago
- */
-function procederAlPago() {
-  // Validar formularios
-  if (!validarFormularios()) {
+    alert('Tu carrito está vacío. Serás redirigido al inicio.');
+    window.location.href = 'index.html';
     return;
   }
   
-  // Verificar que haya productos en el carrito
-  const carrito = cargarCarrito();
-  if (carrito.length === 0) {
-    alert('Tu carrito está vacío');
-    window.location.href = 'catalogo.html';
-    return;
+  // Event listener para el formulario
+  const checkoutForm = document.getElementById('checkout-form');
+  if (checkoutForm) {
+    checkoutForm.addEventListener('submit', manejarEnvio);
   }
-  
-  // Calcular total
-  const total = calcularTotal(carrito);
-  const totalNumero = total.toFixed(2);
-  
-  // Redirigir a PayPal
-  const url = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
-  window.open(url, '_blank');
 }
 
 /**
- * Inicializar checkout
+ * Manejar el envío del formulario
  */
-function inicializarCheckout() {
-  // Cargar total
-  cargarTotal();
+async function manejarEnvio(e) {
+  e.preventDefault();
   
-  // Event listener para checkbox "mismos datos"
-  const checkbox = document.getElementById('same-as-billing');
-  if (checkbox) {
-    checkbox.addEventListener('change', copiarDatosFacturacion);
-    
-    // También copiar cuando cambien los campos de facturación
-    const billingNombre = document.getElementById('billing-nombre');
-    const billingTelefono = document.getElementById('billing-telefono');
-    const billingDireccion = document.getElementById('billing-direccion');
-    
-    if (billingNombre) {
-      billingNombre.addEventListener('input', function() {
-        if (checkbox.checked) copiarDatosFacturacion();
-      });
-    }
-    
-    if (billingTelefono) {
-      billingTelefono.addEventListener('input', function() {
-        if (checkbox.checked) copiarDatosFacturacion();
-      });
-    }
-    
-    if (billingDireccion) {
-      billingDireccion.addEventListener('input', function() {
-        if (checkbox.checked) copiarDatosFacturacion();
-      });
-    }
+  // Validar que los campos obligatorios no estén vacíos
+  const form = document.getElementById('checkout-form');
+  if (!form.checkValidity()) {
+    form.reportValidity();
+    return;
   }
   
-  // Event listener para botón de pago
-  const paymentButton = document.getElementById('proceed-payment');
-  if (paymentButton) {
-    paymentButton.addEventListener('click', procederAlPago);
+  // Cambiar estado del botón
+  const boton = document.getElementById('confirm-order-btn');
+  const textoOriginal = boton.textContent;
+  boton.textContent = 'Procesando...';
+  boton.disabled = true;
+  
+  try {
+    // Recopilar datos del formulario
+    const datosFormulario = {
+      nombre: document.getElementById('nombre').value,
+      email: document.getElementById('email').value,
+      telefono: document.getElementById('telefono').value,
+      cedula: document.getElementById('cedula').value,
+      direccion: document.getElementById('direccion').value,
+      ciudad: document.getElementById('ciudad').value,
+      referencia: document.getElementById('referencia').value || '',
+      fechaEntrega: document.getElementById('fecha-entrega').value,
+      mensajeTarjeta: document.getElementById('mensaje-tarjeta').value || ''
+    };
+    
+    // Obtener carrito y total
+    const carrito = cargarCarrito();
+    const total = calcularTotal(carrito);
+    
+    // Preparar datos para enviar
+    const datosEnvio = {
+      ...datosFormulario,
+      items: carrito,
+      total: total,
+      fecha: new Date().toISOString()
+    };
+    
+    // Enviar a Google Sheets usando fetch
+    const formData = new FormData();
+    formData.append('data', JSON.stringify(datosEnvio));
+    
+    // Enviar con no-cors mode para evitar errores CORS
+    await fetch(GOOGLE_SCRIPT_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    });
+    
+    // Esperar 2 segundos antes de redirigir
+    setTimeout(() => {
+      const totalNumero = total.toFixed(2);
+      const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
+      window.location.href = urlPayPal;
+    }, 2000);
+    
+  } catch (error) {
+    console.error('Error al enviar formulario:', error);
+    // Aún así redirigir a PayPal después de 2 segundos
+    const carrito = cargarCarrito();
+    const total = calcularTotal(carrito);
+    const totalNumero = total.toFixed(2);
+    
+    setTimeout(() => {
+      const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
+      window.location.href = urlPayPal;
+    }, 2000);
   }
 }
 
