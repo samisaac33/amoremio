@@ -329,36 +329,40 @@ function agregarAlCarritoGlobal(producto) {
   }
 }
 
+// Variable global para el índice del carrusel
+let carruselIndex = 0;
+let productosDestacadosGlobal = [];
+
 /**
  * Cargar y renderizar productos destacados
  */
 async function cargarProductosDestacados() {
-  const featuredGrid = document.querySelector('.featured-grid');
-  if (!featuredGrid) return;
+  const featuredTrack = document.querySelector('.featured-carousel-track');
+  if (!featuredTrack) return;
 
   try {
     // Cargar productos
     const productos = await cargarProductosParaMegaMenu();
     
     if (productos.length === 0) {
-      featuredGrid.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles</p>';
+      featuredTrack.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles</p>';
       return;
     }
 
-    // Obtener más productos para el carrusel (al menos 6-8)
-    const productosDestacados = productos.slice(0, Math.max(8, productos.length));
+    // Obtener 10 productos para el carrusel
+    productosDestacadosGlobal = productos.slice(0, 10);
     
     // Renderizar productos
-    featuredGrid.innerHTML = productosDestacados.map((producto, index) => 
+    featuredTrack.innerHTML = productosDestacadosGlobal.map((producto, index) => 
       crearTarjetaProductoHTML(producto, index)
     ).join('');
 
     // Agregar event listeners a los botones de compra
-    featuredGrid.querySelectorAll('.product-btn:not(.disabled)').forEach(btn => {
+    featuredTrack.querySelectorAll('.product-btn:not(.disabled)').forEach(btn => {
       btn.addEventListener('click', function() {
         const card = this.closest('.product-card');
         const productoIndex = parseInt(card.dataset.productoIndex);
-        const producto = productosDestacados[productoIndex];
+        const producto = productosDestacadosGlobal[productoIndex];
         agregarAlCarritoGlobal(producto);
       });
     });
@@ -368,35 +372,64 @@ async function cargarProductosDestacados() {
 
   } catch (error) {
     console.error('Error al cargar productos destacados:', error);
-    featuredGrid.innerHTML = '<p class="mensaje-vacio">Error al cargar productos</p>';
+    featuredTrack.innerHTML = '<p class="mensaje-vacio">Error al cargar productos</p>';
   }
 }
 
 /**
- * Inicializar carrusel de productos destacados
+ * Inicializar carrusel de productos destacados (infinito)
  */
 function inicializarCarruselDestacados() {
-  const featuredGrid = document.querySelector('.featured-grid');
-  const prevBtn = document.querySelector('.carousel-btn.prev-btn');
-  const nextBtn = document.querySelector('.carousel-btn.next-btn');
+  const featuredTrack = document.querySelector('.featured-carousel-track');
+  const prevBtn = document.querySelector('.featured-carousel-wrapper .carousel-btn.prev-btn');
+  const nextBtn = document.querySelector('.featured-carousel-wrapper .carousel-btn.next-btn');
 
-  if (!featuredGrid || !prevBtn || !nextBtn) return;
+  if (!featuredTrack || !prevBtn || !nextBtn) return;
 
-  const scrollAmount = 330; // 300px (ancho tarjeta) + 30px (gap)
+  // Obtener la primera tarjeta para calcular su ancho real
+  const firstCard = featuredTrack.querySelector('.product-card');
+  if (!firstCard) return;
+
+  function getCardWidth() {
+    const rect = firstCard.getBoundingClientRect();
+    return rect.width;
+  }
+
+  function getScrollDistance() {
+    const cardWidth = getCardWidth();
+    const gap = 30;
+    return cardWidth + gap;
+  }
 
   nextBtn.addEventListener('click', function() {
-    featuredGrid.scrollBy({
-      left: scrollAmount,
-      behavior: 'smooth'
-    });
+    carruselIndex++;
+    
+    // Si llegamos al final, volver al inicio (infinito)
+    if (carruselIndex >= productosDestacadosGlobal.length - 3) {
+      carruselIndex = 0;
+    }
+    
+    const scrollDistance = getScrollDistance();
+    const translateX = -(carruselIndex * scrollDistance);
+    featuredTrack.style.transform = `translateX(${translateX}px)`;
   });
 
   prevBtn.addEventListener('click', function() {
-    featuredGrid.scrollBy({
-      left: -scrollAmount,
-      behavior: 'smooth'
-    });
+    carruselIndex--;
+    
+    // Si estamos al inicio, ir al final (infinito)
+    if (carruselIndex < 0) {
+      carruselIndex = productosDestacadosGlobal.length - 4;
+    }
+    
+    const scrollDistance = getScrollDistance();
+    const translateX = -(carruselIndex * scrollDistance);
+    featuredTrack.style.transform = `translateX(${translateX}px)`;
   });
+
+  // Inicializar posición
+  featuredTrack.style.transform = 'translateX(0px)';
+  carruselIndex = 0;
 }
 
 // Función para actualizar el contador del carrito (disponible globalmente)
