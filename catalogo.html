@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Catálogo de productos - Amore Mío Floristería. Explora nuestra colección de arreglos florales únicos">
+    <meta name="keywords" content="catálogo, flores, arreglos florales, ramos, Amore Mío">
+    <title>Amore Mío - Catálogo</title>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- El Navbar se inyecta automáticamente aquí mediante main.js -->
+    
+    <main>
+        <div id="app">
+            <!-- Título de la sección -->
+            <section class="catalogo-header">
+                <h1 class="catalogo-title">Nuestra Colección</h1>
+            </section>
+
+            <!-- Barra de filtros -->
+            <section class="filtros-container">
+                <div class="filtros-wrapper">
+                    <button class="filtro-btn active" data-categoria="Todos">Todos</button>
+                    <button class="filtro-btn" data-categoria="Bouquets">Bouquets</button>
+                    <button class="filtro-btn" data-categoria="Floreros">Floreros</button>
+                    <button class="filtro-btn" data-categoria="Cajas">Cajas</button>
+                    <button class="filtro-btn" data-categoria="Frutales">Frutales</button>
+                </div>
+            </section>
+
+            <!-- Loader -->
+            <div id="loader" class="loader-container">
+                <div class="loader-text">Cargando flores hermosas...</div>
+                <div class="loader-spinner"></div>
+            </div>
+
+            <!-- Galería de productos -->
+            <section class="catalogo-section">
+                <div id="galeria-productos" class="masonry-grid"></div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="main.js"></script>
+    <script src="catalogo.js"></script>
+</body>
+</html>

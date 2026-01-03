@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Contacta con Amore Mío - Estamos en Av. Reales Tamarindos y Paulo Emilio Macías. Tel: 0986681447">
+    <meta name="keywords" content="contacto, ubicación, teléfono, Amore Mío, floristería">
+    <title>Amore Mío - Contacto</title>
+    
+    <!-- Estilos -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- El Navbar se inyecta automáticamente aquí mediante main.js -->
+    
+    <main>
+        <div id="app">
+            <section class="contacto-section">
+                <div class="container">
+                    <h1 class="contacto-title">Contáctanos</h1>
+                    
+                    <div class="contacto-content">
+                        <!-- Columna Izquierda - Información -->
+                        <div class="contacto-info">
+                            <div class="info-card">
+                                <h2 class="info-title">Información de Contacto</h2>
+                                
+                                <div class="info-item">
+                                    <span class="info-icon">📍</span>
+                                    <div class="info-content">
+                                        <h3>Dirección</h3>
+                                        <p>Av. Reales Tamarindos y Paulo Emilio Macías<br>(Frente a la gallada del chinito)</p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-icon">📞</span>
+                                    <div class="info-content">
+                                        <h3>Teléfono</h3>
+                                        <p><a href="tel:0986681447">0986681447</a></p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-icon">✉️</span>
+                                    <div class="info-content">
+                                        <h3>Email</h3>
+                                        <p><a href="mailto:contacto@amoremio.com">contacto@amoremio.com</a></p>
+                                    </div>
+                                </div>
+
+                                <div class="info-item">
+                                    <span class="info-icon">🕒</span>
+                                    <div class="info-content">
+                                        <h3>Horario de Atención</h3>
+                                        <p>Lunes a Sábado: 9:00 AM - 7:00 PM</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha - Formulario -->
+                        <div class="contacto-formulario">
+                            <div class="form-card">
+                                <h2 class="form-title">Escríbenos</h2>
+                                <form id="whatsapp-form" class="contact-form">
+                                    <div class="form-group">
+                                        <label for="nombre" class="form-label">Nombre</label>
+                                        <input 
+                                            type="text" 
+                                            id="nombre" 
+                                            name="nombre" 
+                                            class="form-input" 
+                                            placeholder="Tu nombre"
+                                            required
+                                        >
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="mensaje" class="form-label">Mensaje</label>
+                                        <textarea 
+                                            id="mensaje" 
+                                            name="mensaje" 
+                                            class="form-textarea" 
+                                            rows="5" 
+                                            placeholder="Escribe tu mensaje aquí..."
+                                            required
+                                        ></textarea>
+                                    </div>
+                                    <button type="submit" class="form-btn">
+                                        💬 Enviar a WhatsApp
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mapa -->
+                    <div class="contacto-mapa">
+                        <h2 class="mapa-title">Nuestra Ubicación</h2>
+                        <div class="mapa-container">
+                            <iframe 
+                                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.1234567890123!2d-80.45!3d-1.05!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMcKwMDAnMDAuMCJTIDgwwrAyNyowMC4wIlc!5e0!3m2!1ses!2sec!4v1234567890123!5m2!1ses!2sec"
+                                width="100%" 
+                                height="400" 
+                                style="border:0;" 
+                                allowfullscreen="" 
+                                loading="lazy" 
+                                referrerpolicy="no-referrer-when-downgrade"
+                                class="mapa-iframe"
+                            ></iframe>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Scripts -->
+    <script src="main.js"></script>
+    <script>
+        // Formulario WhatsApp
+        document.getElementById('whatsapp-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nombre = document.getElementById('nombre').value.trim();
+            const mensaje = document.getElementById('mensaje').value.trim();
+            
+            if (!nombre || !mensaje) {
+                alert('Por favor, completa todos los campos');
+                return;
+            }
+            
+            const texto = `Hola Amore Mío, mi nombre es ${nombre}. ${mensaje}`;
+            const url = `https://wa.me/593986681447?text=${encodeURIComponent(texto)}`;
+            
+            window.open(url, '_blank');
+        });
+    </script>
+</body>
+</html>
