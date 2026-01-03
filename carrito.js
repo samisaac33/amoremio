@@ -110,9 +110,20 @@ function renderizarCarrito() {
         <div class="total-info">
           <h2>Total: <span>${formatearPrecio(total)}</span></h2>
         </div>
-        <button class="btn btn-primary btn-whatsapp" onclick="finalizarCompra()">
-          <i class="fab fa-whatsapp"></i> Finalizar Compra por WhatsApp
-        </button>
+        
+        <div id="payment-options" class="payment-options">
+          <h3 class="payment-title">Selecciona tu método de pago</h3>
+          <div class="payment-buttons">
+            <button class="payment-btn payment-btn-whatsapp" onclick="finalizarCompraWhatsApp()">
+              <i class="fab fa-whatsapp"></i>
+              Ordenar por WhatsApp
+            </button>
+            <button class="payment-btn payment-btn-paypal" onclick="finalizarCompraPayPal()">
+              <i class="fab fa-paypal"></i>
+              Pagar con PayPal
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   `;
@@ -123,7 +134,7 @@ function renderizarCarrito() {
 /**
  * Finalizar compra - Abrir WhatsApp
  */
-function finalizarCompra() {
+function finalizarCompraWhatsApp() {
   const carrito = cargarCarrito();
   
   if (carrito.length === 0) {
@@ -131,17 +142,35 @@ function finalizarCompra() {
     return;
   }
   
-  let mensaje = 'Hola Amore Mío, quiero:\n\n';
+  let mensaje = 'Hola Amore Mío, deseo ordenar: ';
   
-  carrito.forEach((producto, index) => {
+  const productosLista = carrito.map((producto, index) => {
     const precio = formatearPrecio(producto.Precio);
-    mensaje += `${index + 1}x ${producto.Nombre} (${precio})\n`;
-  });
+    return `${index + 1}x ${producto.Nombre} (${precio})`;
+  }).join(', ');
   
   const total = calcularTotal(carrito);
-  mensaje += `\nTotal: ${formatearPrecio(total)}`;
+  mensaje += productosLista + `. Total a pagar: ${formatearPrecio(total)}`;
   
   const url = `https://wa.me/593986681447?text=${encodeURIComponent(mensaje)}`;
+  window.open(url, '_blank');
+}
+
+/**
+ * Finalizar compra - Abrir PayPal
+ */
+function finalizarCompraPayPal() {
+  const carrito = cargarCarrito();
+  
+  if (carrito.length === 0) {
+    alert('Tu carrito está vacío');
+    return;
+  }
+  
+  const total = calcularTotal(carrito);
+  // Extraer solo el número del total (sin el símbolo $)
+  const totalNumero = total.toFixed(2);
+  const url = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
   window.open(url, '_blank');
 }
 

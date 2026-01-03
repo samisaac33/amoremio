@@ -1923,11 +1923,14 @@ main {
 
 .carrito-total {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column;
   padding: var(--spacing-lg) 0;
   border-top: 2px solid var(--color-text);
   gap: var(--spacing-lg);
+}
+
+.total-info {
+  margin-bottom: var(--spacing-md);
 }
 
 .total-info h2 {
@@ -1942,16 +1945,67 @@ main {
   font-weight: 400;
 }
 
-.btn-whatsapp {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-sm);
-  font-size: 1rem;
-  padding: 1rem 2rem;
+.payment-options {
+  width: 100%;
 }
 
-.btn-whatsapp i {
+.payment-title {
+  font-family: var(--font-body);
   font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-md) 0;
+  text-align: center;
+}
+
+.payment-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.payment-btn {
+  width: 100%;
+  padding: 1.2rem 2rem;
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  transition: all var(--transition-fast);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payment-btn i {
+  font-size: 1.5rem;
+}
+
+.payment-btn-whatsapp {
+  background-color: #25D366;
+  color: #FFFFFF;
+}
+
+.payment-btn-whatsapp:hover {
+  background-color: #20BA5A;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
+}
+
+.payment-btn-paypal {
+  background-color: #0070BA;
+  color: #FFFFFF;
+}
+
+.payment-btn-paypal:hover {
+  background-color: #005EA6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 112, 186, 0.3);
 }
 
 @media (max-width: 768px) {
@@ -1991,9 +2045,17 @@ main {
     align-items: stretch;
   }
   
-  .btn-whatsapp {
-    width: 100%;
-    justify-content: center;
+  .payment-buttons {
+    gap: var(--spacing-sm);
+  }
+  
+  .payment-btn {
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+  }
+  
+  .payment-title {
+    font-size: 1.1rem;
   }
 }
 
