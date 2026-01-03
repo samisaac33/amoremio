@@ -272,79 +272,114 @@ main {
    FOOTER
    ======================================== */
 .footer {
-  background-color: var(--color-primary);
-  color: var(--color-white);
-  padding: var(--spacing-xl) 0 var(--spacing-md);
+  background-color: #111;
+  color: #FFFFFF;
+  padding: var(--spacing-xl) 0;
   margin-top: auto;
 }
 
 .footer-container {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
 
 .footer-content {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
 }
 
-.footer-section h3 {
-  font-family: var(--font-heading);
-  font-size: 1.5rem;
-  margin-bottom: var(--spacing-md);
-  color: var(--color-accent);
-}
-
-.footer-section p,
-.footer-section a {
-  color: var(--color-white);
-  text-decoration: none;
-  margin-bottom: var(--spacing-xs);
-  display: block;
-  transition: color var(--transition-fast);
-}
-
-.footer-section a:hover {
-  color: var(--color-accent-light);
-}
-
-.footer-contact-item {
+.footer-section {
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
+}
+
+.footer-brand {
   gap: var(--spacing-sm);
-  margin-bottom: var(--spacing-sm);
 }
 
-.footer-contact-icon {
-  font-size: 1.2rem;
-  margin-top: 0.2rem;
+.footer-logo {
+  font-family: var(--font-heading);
+  font-size: 2rem;
+  font-weight: 400;
+  color: #FFFFFF;
+  margin: 0;
+  padding: 0;
 }
 
-.footer-social {
+.footer-tagline {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  padding: 0;
+}
+
+.footer-title {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #FFFFFF;
+  margin: 0 0 var(--spacing-md) 0;
+  padding: 0;
+}
+
+.footer-social-links {
   display: flex;
   gap: var(--spacing-md);
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-xs);
 }
 
-.footer-social a {
+.footer-social-link {
+  color: #FFFFFF;
   font-size: 1.5rem;
-  transition: transform var(--transition-fast);
+  text-decoration: none;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  display: inline-block;
 }
 
-.footer-social a:hover {
-  transform: translateY(-3px);
-  color: var(--color-accent);
+.footer-social-link:hover {
+  color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.footer-payment-methods {
+  display: flex;
+  gap: var(--spacing-md);
+  align-items: center;
+  margin-top: var(--spacing-xs);
+}
+
+.footer-payment-link {
+  color: #FFFFFF;
+  font-size: 1.8rem;
+  text-decoration: none;
+  transition: color var(--transition-fast), transform var(--transition-fast);
+  display: inline-block;
+}
+
+.footer-payment-link:hover {
+  color: rgba(255, 255, 255, 0.7);
+  transform: translateY(-2px);
+}
+
+.footer-payment-icon {
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 1.8rem;
+  display: inline-block;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: var(--spacing-md);
   text-align: center;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.85rem;
+  font-family: var(--font-body);
 }
 
 /* ========================================
@@ -404,18 +439,19 @@ main {
 
   .footer-content {
     grid-template-columns: 1fr;
-    text-align: center;
+    gap: var(--spacing-lg);
   }
 
   .footer-section {
+    align-items: center;
     text-align: center;
   }
 
-  .footer-contact-item {
+  .footer-social-links {
     justify-content: center;
   }
 
-  .footer-social {
+  .footer-payment-methods {
     justify-content: center;
   }
 }
@@ -815,7 +851,7 @@ main {
   }
   
   .featured-carousel-track .product-card {
-    flex: 0 0 calc((100% - 30px) / 2);
+    flex: 0 0 calc(50% - 10px);
   }
   
   .featured-carousel-wrapper .carousel-btn {

@@ -65,43 +65,53 @@ function generateFooter() {
     <footer class="footer">
       <div class="footer-container">
         <div class="footer-content">
-          <div class="footer-section">
-            <h3>Amore Mío</h3>
-            <p>Floristería especializada en crear momentos inolvidables a través de arreglos florales únicos y personalizados.</p>
+          <div class="footer-section footer-brand">
+            <h2 class="footer-logo">Amore Mío</h2>
+            <p class="footer-tagline">Pasión en cada detalle</p>
           </div>
           
-          <div class="footer-section">
-            <h3>Contacto</h3>
-            <div class="footer-contact-item">
-              <span class="footer-contact-icon">📍</span>
-              <span>Av. Reales Tamarindos y Paulo Emilio Macías</span>
-            </div>
-            <div class="footer-contact-item">
-              <span class="footer-contact-icon">📞</span>
-              <a href="tel:0986681447">0986681447</a>
-            </div>
-            <div class="footer-contact-item">
-              <span class="footer-contact-icon">✉️</span>
-              <a href="mailto:contacto@amoremio.com">contacto@amoremio.com</a>
-            </div>
-          </div>
-          
-          <div class="footer-section">
-            <h3>Síguenos</h3>
-            <p>Mantente al día con nuestras novedades y ofertas especiales</p>
-            <div class="footer-social">
-              <a href="https://www.instagram.com/floristeriaamoremio" 
+          <div class="footer-section footer-social">
+            <h3 class="footer-title">Síguenos</h3>
+            <div class="footer-social-links">
+              <a href="https://www.instagram.com/amoremio_portoviejo/" 
                  target="_blank" 
                  rel="noopener noreferrer" 
-                 aria-label="Instagram de Amore Mío">
-                📷
+                 aria-label="Instagram de Amore Mío"
+                 class="footer-social-link">
+                <i class="fab fa-instagram"></i>
               </a>
+              <a href="https://www.facebook.com/profile.php?id=100032133146340" 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 aria-label="Facebook de Amore Mío"
+                 class="footer-social-link">
+                <i class="fab fa-facebook"></i>
+              </a>
+            </div>
+          </div>
+          
+          <div class="footer-section footer-payment">
+            <h3 class="footer-title">Pagos Seguros</h3>
+            <div class="footer-payment-methods">
+              <a href="https://www.paypal.me/amoremioflorist" 
+                 target="_blank" 
+                 rel="noopener noreferrer" 
+                 aria-label="PayPal de Amore Mío"
+                 class="footer-payment-link">
+                <i class="fab fa-paypal"></i>
+              </a>
+              <span class="footer-payment-icon" aria-label="Visa">
+                <i class="fab fa-cc-visa"></i>
+              </span>
+              <span class="footer-payment-icon" aria-label="Mastercard">
+                <i class="fab fa-cc-mastercard"></i>
+              </span>
             </div>
           </div>
         </div>
         
         <div class="footer-bottom">
-          <p>&copy; 2025 Amore Mío. Todos los derechos reservados.</p>
+          <p>&copy; 2026 Amore Mío. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>
