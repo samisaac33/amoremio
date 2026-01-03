@@ -157,7 +157,7 @@ function finalizarCompraWhatsApp() {
 }
 
 /**
- * Finalizar compra - Abrir PayPal
+ * Finalizar compra - Redirigir a Checkout
  */
 function finalizarCompraPayPal() {
   const carrito = cargarCarrito();
@@ -167,11 +167,8 @@ function finalizarCompraPayPal() {
     return;
   }
   
-  const total = calcularTotal(carrito);
-  // Extraer solo el número del total (sin el símbolo $)
-  const totalNumero = total.toFixed(2);
-  const url = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
-  window.open(url, '_blank');
+  // Redirigir a checkout.html
+  window.location.href = 'checkout.html';
 }
 
 /**

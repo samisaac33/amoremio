@@ -2060,6 +2060,197 @@ main {
 }
 
 /* ========================================
+   CHECKOUT
+   ======================================== */
+.checkout-container {
+  background-color: var(--color-white);
+  min-height: calc(100vh - 200px);
+}
+
+.checkout-title {
+  font-family: var(--font-heading);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--color-text);
+  text-align: center;
+  margin-bottom: var(--spacing-xl);
+  padding: 0 var(--spacing-md);
+}
+
+.checkout-content {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.checkout-column {
+  width: 100%;
+}
+
+.checkout-form {
+  background-color: var(--color-white);
+  padding: var(--spacing-lg);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0 0 var(--spacing-lg) 0;
+  padding-bottom: var(--spacing-md);
+  border-bottom: 2px solid var(--color-text);
+}
+
+.form-group {
+  margin-bottom: var(--spacing-md);
+}
+
+.form-group label {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: var(--spacing-xs);
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="date"],
+.form-group textarea {
+  width: 100%;
+  padding: 0.9rem 1.2rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-white);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 0;
+  transition: border-color var(--transition-fast);
+  box-sizing: border-box;
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="email"]:focus,
+.form-group input[type="tel"]:focus,
+.form-group input[type="date"]:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-text);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+.checkbox-group {
+  margin-bottom: var(--spacing-lg);
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: 400 !important;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: auto;
+  margin-right: var(--spacing-xs);
+  cursor: pointer;
+  transform: scale(1.2);
+}
+
+.checkout-summary {
+  margin-top: var(--spacing-xl);
+  padding: var(--spacing-xl);
+  background-color: rgba(0, 0, 0, 0.02);
+  border-top: 2px solid var(--color-text);
+  text-align: center;
+}
+
+.summary-total {
+  margin-bottom: var(--spacing-lg);
+}
+
+.total-text {
+  font-family: var(--font-heading);
+  font-size: 2.5rem;
+  font-weight: 400;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.total-text span {
+  font-weight: 400;
+}
+
+.payment-proceed-btn {
+  width: 100%;
+  max-width: 500px;
+  padding: 1.3rem 2.5rem;
+  background: linear-gradient(135deg, #0070BA 0%, #005EA6 100%);
+  color: #FFFFFF;
+  border: none;
+  border-radius: 0;
+  font-family: var(--font-body);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  transition: all var(--transition-fast);
+  box-shadow: 0 4px 12px rgba(0, 112, 186, 0.2);
+}
+
+.payment-proceed-btn:hover {
+  background: linear-gradient(135deg, #005EA6 0%, #004A8C 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 112, 186, 0.3);
+}
+
+.payment-proceed-btn:active {
+  transform: translateY(0);
+}
+
+.payment-proceed-btn i {
+  font-size: 1.5rem;
+}
+
+@media (max-width: 768px) {
+  .checkout-content {
+    grid-template-columns: 1fr;
+    gap: var(--spacing-lg);
+  }
+  
+  .checkout-title {
+    font-size: 2.5rem;
+  }
+  
+  .form-title {
+    font-size: 1.5rem;
+  }
+  
+  .total-text {
+    font-size: 2rem;
+  }
+  
+  .payment-proceed-btn {
+    font-size: 1.1rem;
+    padding: 1.2rem 2rem;
+  }
+}
+
+/* ========================================
    UTILIDADES
    ======================================== */
 .container {
