@@ -36,7 +36,10 @@ function generateNavbar() {
   return `
     <header class="navbar">
       <div class="navbar-container">
-        <a href="index.html" class="navbar-logo">Amore Mío</a>
+        <a href="index.html" class="navbar-logo">
+          <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="nav-logo-img">
+          Amore Mío
+        </a>
         <nav class="navbar-nav">
           <ul class="navbar-menu" id="navbarMenu">
             ${menuLinks}
@@ -66,6 +69,7 @@ function generateFooter() {
       <div class="footer-container">
         <div class="footer-content">
           <div class="footer-section footer-brand">
+            <img src="https://drive.google.com/thumbnail?id=17dNi3fIpOWX1bc4kjPTcSWySO2PPVtLS&sz=w2000" alt="Amore Mío" class="footer-logo-img">
             <h2 class="footer-logo">Amore Mío</h2>
             <p class="footer-tagline">Pasión en cada detalle</p>
           </div>

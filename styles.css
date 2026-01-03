@@ -90,10 +90,19 @@ body {
   color: var(--color-text);
   text-decoration: none;
   transition: color var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
 }
 
 .navbar-logo:hover {
   color: var(--color-text-light);
+}
+
+.nav-logo-img {
+  height: 45px;
+  width: auto;
+  display: block;
 }
 
 .navbar-nav {
@@ -298,6 +307,13 @@ main {
 
 .footer-brand {
   gap: var(--spacing-sm);
+}
+
+.footer-logo-img {
+  height: 60px;
+  width: auto;
+  display: block;
+  margin-bottom: var(--spacing-xs);
 }
 
 .footer-logo {
