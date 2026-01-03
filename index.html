@@ -7,25 +7,31 @@
     <meta name="keywords" content="floristería, flores, arreglos florales, Amore Mío, Ecuador">
     <title>Amore Mío - Floristería | Inicio</title>
     
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Estilos -->
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <main>
         <div id="app">
-            <!-- Hero Section -->
+            <!-- Hero Section - Carrusel -->
             <section class="hero">
-                <video class="hero-video" autoplay muted loop playsinline>
-                    <source src="https://videos.pexels.com/video-files/5366788/5366788-hd_1920_1080_25fps.mp4" type="video/mp4">
-                </video>
+                <div class="hero-slider">
+                    <div class="hero-slide active">
+                        <img src="https://images.unsplash.com/photo-1561181286-d3fee7d55364?q=80&w=1920" alt="Flores hermosas">
+                    </div>
+                    <div class="hero-slide">
+                        <img src="https://images.unsplash.com/photo-1527061011665-3652c757a4d4?q=80&w=1920" alt="Arreglos florales">
+                    </div>
+                    <div class="hero-slide">
+                        <img src="https://images.unsplash.com/photo-1490750967868-88dd44862931?q=80&w=1920" alt="Rosas elegantes">
+                    </div>
+                </div>
                 <div class="hero-overlay"></div>
                 <div class="hero-content">
-                    <h1 class="hero-title">Dilo con Flores, Dilo con Amore Mío</h1>
-                    <p class="hero-subtitle">Arreglos florales exclusivos en Portoviejo para esos momentos inolvidables.</p>
-                    <div class="hero-buttons">
-                        <a href="catalogo.html" class="btn btn-primary">Ver Catálogo</a>
-                        <a href="https://wa.me/593986681447" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">💬 Escríbenos</a>
-                    </div>
+                    <h1 class="hero-title">AMOR Eterno</h1>
+                    <a href="catalogo.html" class="btn btn-primary">Ver Catálogo</a>
                 </div>
             </section>
 
@@ -50,5 +56,6 @@
     </main>
     
     <script src="main.js"></script>
+    <script src="hero-slider.js"></script>
 </body>
 </html>

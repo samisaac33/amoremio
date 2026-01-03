@@ -4,11 +4,25 @@
  */
 
 /**
+ * Obtiene el número de items en el carrito
+ * @returns {number} Cantidad de items
+ */
+function getCarritoCount() {
+  try {
+    const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    return carrito.length;
+  } catch {
+    return 0;
+  }
+}
+
+/**
  * Genera el HTML del Navbar
  * @returns {string} HTML del Navbar
  */
 function generateNavbar() {
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  const carritoCount = getCarritoCount();
   
   const navItems = [
     { href: 'index.html', text: 'Inicio' },
@@ -25,13 +39,26 @@ function generateNavbar() {
 
   return `
     <header class="navbar">
-      <div class="navbar-container">
-        <a href="index.html" class="navbar-logo">Amore Mío</a>
-        <nav>
-          <ul class="navbar-menu" id="navbarMenu">
-            ${menuItems}
-          </ul>
-        </nav>
+      <div class="navbar-row navbar-row-1">
+        <div class="navbar-container">
+          <a href="index.html" class="navbar-logo">Amore Mío</a>
+          <div class="navbar-search">
+            <input type="text" placeholder="Buscar..." class="search-input" id="searchInput">
+          </div>
+          <a href="carrito.html" class="navbar-cart">
+            <i class="fas fa-shopping-bag"></i>
+            ${carritoCount > 0 ? `<span class="cart-count">${carritoCount}</span>` : ''}
+          </a>
+        </div>
+      </div>
+      <div class="navbar-row navbar-row-2">
+        <div class="navbar-container">
+          <nav>
+            <ul class="navbar-menu" id="navbarMenu">
+              ${menuItems}
+            </ul>
+          </nav>
+        </div>
       </div>
     </header>
   `;
@@ -130,3 +157,21 @@ if (document.readyState === 'loading') {
   injectGlobalComponents();
   highlightActiveMenuItem();
 }
+
+// Función para actualizar el contador del carrito (disponible globalmente)
+window.updateCarritoCount = function() {
+  const cartIcon = document.querySelector('.navbar-cart');
+  if (cartIcon) {
+    const count = getCarritoCount();
+    const countElement = cartIcon.querySelector('.cart-count');
+    if (count > 0) {
+      if (!countElement) {
+        cartIcon.innerHTML = `<i class="fas fa-shopping-bag"></i><span class="cart-count">${count}</span>`;
+      } else {
+        countElement.textContent = count;
+      }
+    } else if (countElement) {
+      countElement.remove();
+    }
+  }
+};

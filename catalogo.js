@@ -51,19 +51,56 @@ async function cargarProductos() {
   }
 }
 
+// Variable para guardar productos filtrados actuales
+let productosFiltradosActuales = [];
+
 /**
  * Renderizar productos en la galería
  * @param {Array} productosFiltrados - Array de productos a mostrar
  */
 function renderizarProductos(productosFiltrados) {
   const galeria = document.getElementById('galeria-productos');
+  productosFiltradosActuales = productosFiltrados; // Guardar referencia
 
   if (productosFiltrados.length === 0) {
     galeria.innerHTML = '<p class="mensaje-vacio">No hay productos en esta categoría.</p>';
     return;
   }
 
-  galeria.innerHTML = productosFiltrados.map(producto => crearTarjetaProducto(producto)).join('');
+  galeria.innerHTML = productosFiltrados.map((producto, index) => crearTarjetaProducto(producto, index)).join('');
+  
+  // Agregar event listeners a los botones de compra
+  document.querySelectorAll('.product-btn:not(.disabled)').forEach(btn => {
+    btn.addEventListener('click', function() {
+      const card = this.closest('.product-card');
+      const productoIndex = parseInt(card.dataset.productoIndex);
+      const producto = productosFiltradosActuales[productoIndex];
+      agregarAlCarrito(producto);
+    });
+  });
+}
+
+/**
+ * Agregar producto al carrito
+ * @param {Object} producto - Producto a agregar
+ */
+function agregarAlCarrito(producto) {
+  try {
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    carrito.push(producto);
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+    // Actualizar contador si existe la función
+    if (typeof updateCarritoCount === 'function') {
+      updateCarritoCount();
+    }
+    
+    // Redirigir a carrito
+    window.location.href = 'carrito.html';
+  } catch (error) {
+    console.error('Error al agregar al carrito:', error);
+    alert('Error al agregar el producto al carrito');
+  }
 }
 
 /**
@@ -71,20 +108,14 @@ function renderizarProductos(productosFiltrados) {
  * @param {Object} producto - Objeto producto con sus propiedades
  * @returns {string} HTML de la tarjeta
  */
-function crearTarjetaProducto(producto) {
+function crearTarjetaProducto(producto, index) {
   const disponible = producto.Disponible !== false; // Asumimos disponible si no se especifica
   const tieneEtiqueta = producto.Etiqueta && producto.Etiqueta.trim() !== '';
   const claseAgotado = !disponible ? 'agotado' : '';
   const precio = formatearPrecio(producto.Precio);
-  
-  // Mensaje para WhatsApp
-  const mensajeWhatsApp = encodeURIComponent(
-    `Hola Amore Mío, me interesa el arreglo: ${producto.Nombre}`
-  );
-  const urlWhatsApp = `https://wa.me/593986681447?text=${mensajeWhatsApp}`;
 
   return `
-    <div class="product-card ${claseAgotado}" data-categoria="${producto.Categoria || ''}">
+    <div class="product-card ${claseAgotado}" data-categoria="${producto.Categoria || ''}" data-producto-index="${index}">
       <div class="product-image-container">
         <img 
           src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
@@ -96,18 +127,15 @@ function crearTarjetaProducto(producto) {
       </div>
       <div class="product-info">
         <h3 class="product-name">${producto.Nombre || 'Sin nombre'}</h3>
-        ${producto.Descripcion ? `<p class="product-description">${producto.Descripcion}</p>` : ''}
         <div class="product-footer">
           <span class="product-price">${precio}</span>
-          <a 
-            href="${urlWhatsApp}" 
-            target="_blank" 
-            rel="noopener noreferrer"
+          <button 
             class="product-btn ${!disponible ? 'disabled' : ''}"
+            ${!disponible ? 'disabled' : ''}
             ${!disponible ? 'aria-disabled="true"' : ''}
           >
-            ${disponible ? '💬 Consultar' : 'Agotado'}
-          </a>
+            ${disponible ? 'Comprar' : 'Agotado'}
+          </button>
         </div>
       </div>
     </div>
@@ -152,7 +180,7 @@ function filtrarPorCategoria(categoria) {
     );
   }
 
-  // Renderizar productos filtrados
+  // Renderizar productos filtrados (pasar array completo para mantener índices)
   renderizarProductos(productosFiltrados);
 
   // Scroll suave a la galería
