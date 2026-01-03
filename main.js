@@ -32,14 +32,6 @@ function generateNavbar() {
             ${menuItems}
           </ul>
         </nav>
-        <div class="navbar-actions">
-          <a href="tel:0986681447" class="navbar-icon" aria-label="Llamar">
-            📞
-          </a>
-          <a href="contacto.html" class="navbar-icon" aria-label="Carrito">
-            🛒
-          </a>
-        </div>
       </div>
     </header>
   `;

@@ -2,15 +2,22 @@
    VARIABLES CSS - AMORE MÍO
    ======================================== */
 :root {
-  /* Colores Principales */
-  --color-primary: #8B0000;        /* Rojo Vino profundo */
-  --color-primary-dark: #6B0000;   /* Rojo Vino más oscuro para hover */
-  --color-accent: #D4AF37;         /* Dorado */
-  --color-accent-light: #E8C547;   /* Dorado claro para hover */
-  --color-background: #FDFBF7;     /* Crema suave */
+  /* Nueva Paleta de Colores */
+  --primary-color: #D48998;        /* Rosa Palo / Dusty Rose */
+  --secondary-color: #2D3748;      /* Gris Pizarra oscuro para textos */
+  --accent-color: #E9D8FD;         /* Lavanda suave para fondos o detalles */
+  --bg-color: #FFF5F5;             /* Blanco con tinte rosado muy suave */
+  --white: #FFFFFF;
+  
+  /* Colores Principales (Compatibilidad) */
+  --color-primary: #D48998;        /* Rosa Palo */
+  --color-primary-dark: #C07485;   /* Rosa más oscuro para hover */
+  --color-accent: #E9D8FD;         /* Lavanda suave */
+  --color-accent-light: #D6B8FD;   /* Lavanda más intenso para hover */
+  --color-background: #FFF5F5;     /* Blanco con tinte rosado */
   --color-white: #FFFFFF;
-  --color-text: #2C2C2C;           /* Texto oscuro */
-  --color-text-light: #666666;     /* Texto secundario */
+  --color-text: #2D3748;           /* Gris Pizarra oscuro */
+  --color-text-light: #4A5568;     /* Gris Pizarra medio */
   
   /* Tipografía */
   --font-heading: 'Playfair Display', serif;
@@ -133,25 +140,6 @@ body {
   width: 100%;
 }
 
-.navbar-actions {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-md);
-}
-
-.navbar-icon {
-  font-size: 1.5rem;
-  color: var(--color-primary);
-  text-decoration: none;
-  transition: transform var(--transition-fast), color var(--transition-fast);
-  display: flex;
-  align-items: center;
-}
-
-.navbar-icon:hover {
-  transform: scale(1.1);
-  color: var(--color-primary-dark);
-}
 
 /* ========================================
    MAIN CONTENT AREA
@@ -299,12 +287,17 @@ main {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-image: url('https://images.unsplash.com/photo-1518709268805-4e9042af9f23?q=80&w=1920');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   overflow: hidden;
+}
+
+.hero-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
 }
 
 .hero-overlay {
@@ -460,7 +453,6 @@ main {
   .hero {
     height: 85vh;
     min-height: 500px;
-    background-attachment: scroll;
   }
 
   .hero-content {
@@ -634,22 +626,21 @@ main {
 .masonry-grid {
   max-width: 1200px;
   margin: 0 auto;
-  column-count: 2;
-  column-gap: 20px;
-  column-fill: balance;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
 /* Tarjeta de producto */
 .product-card {
-  break-inside: avoid;
   background-color: var(--color-white);
   border-radius: 8px;
   overflow: hidden;
-  margin-bottom: 20px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all var(--transition-normal);
   display: flex;
   flex-direction: column;
+  height: 100%;
 }
 
 .product-card:hover {
@@ -806,23 +797,17 @@ main {
 }
 
 /* Responsive - Catálogo */
-@media (min-width: 768px) {
-  .masonry-grid {
-    column-count: 3;
-  }
-
+@media (min-width: 769px) {
   .catalogo-title {
     font-size: 3.5rem;
   }
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 768px) {
   .masonry-grid {
-    column-count: 4;
+    grid-template-columns: 1fr;
   }
-}
 
-@media (max-width: 767px) {
   .catalogo-title {
     font-size: 2.2rem;
   }
