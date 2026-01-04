@@ -32,22 +32,11 @@ async function cargarProductos() {
     const data = await response.json();
     productos = Array.isArray(data) ? data : [];
 
-    // Debug: mostrar estructura del primer producto para identificar propiedades
-    if (productos.length > 0) {
-      console.log('Primer producto (estructura):', productos[0]);
-      console.log('Propiedades del primer producto:', Object.keys(productos[0]));
-    }
-
     // --- CLASIFICACIÓN AUTOMÁTICA POR PREFIJO ---
-    productos.forEach((p, index) => {
+    productos.forEach((p) => {
         // Buscar el ID en diferentes posibles propiedades
         const idRaw = p.id || p.ID || p.Id || p.codigo || p.Codigo || p.CODIGO || p['Código'] || '';
         const id = String(idRaw).trim().toUpperCase();
-        
-        // Debug: mostrar IDs de los primeros productos
-        if (index < 5) {
-          console.log(`Producto ${index + 1} - ID encontrado: "${id}" (raw: ${idRaw})`);
-        }
         
         // Verificar 'AF' primero porque es prefijo de dos letras
         if (id && id.startsWith('AF')) {
@@ -59,29 +48,8 @@ async function cargarProductos() {
         } else if (id && id.startsWith('J')) {
             p.categoria = 'Arreglos en Floreros';
         } else {
-            // Si no coincide, dejar sin categoría
-            console.warn(`Producto sin categoría - ID: "${id}"`, p);
+            p.categoria = 'Sin categoría';
         }
-    });
-
-    // Debug: mostrar estadísticas de categorización
-    console.log('=== ESTADÍSTICAS DE PRODUCTOS ===');
-    console.log('Total de productos cargados:', productos.length);
-    const categorias = {};
-    productos.forEach(p => {
-        const cat = p.categoria || 'Sin categoría';
-        categorias[cat] = (categorias[cat] || 0) + 1;
-    });
-    console.log('Distribución por categorías:', categorias);
-    
-    // Mostrar algunos productos de cada categoría
-    Object.keys(categorias).forEach(cat => {
-      const productosCat = productos.filter(p => (p.categoria || 'Sin categoría') === cat);
-      console.log(`${cat} (${categorias[cat]} productos):`, productosCat.slice(0, 2).map(p => ({
-        id: p.id || p.ID || 'N/A',
-        nombre: p.Nombre || 'N/A',
-        categoria: p.categoria || 'Sin categoría'
-      })));
     });
 
     if (productos.length === 0) {
@@ -350,12 +318,13 @@ function crearTarjetaProducto(producto, index) {
   return `
     <div class="product-card ${claseAgotado}" data-categoria="${producto.categoria || ''}" data-producto-index="${index}">
       <div class="product-image-container">
-        <img 
-          src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
-          alt="${producto.Nombre || 'Producto'}"
-          class="product-image"
-          loading="lazy"
-        >
+          <img 
+            src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
+            alt="${producto.Nombre || 'Producto'}"
+            class="product-image"
+            loading="lazy"
+            decoding="async"
+          >
         ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
       </div>
       <div class="product-info">
@@ -366,6 +335,7 @@ function crearTarjetaProducto(producto, index) {
             class="product-btn ${!disponible ? 'disabled' : ''}"
             ${!disponible ? 'disabled' : ''}
             ${!disponible ? 'aria-disabled="true"' : ''}
+            aria-label="${disponible ? `Comprar ${producto.Nombre || 'producto'}` : 'Producto agotado'}"
           >
             ${disponible ? 'Comprar' : 'Agotado'}
           </button>
@@ -412,28 +382,8 @@ function filtrarPorCategoria(categoria) {
     productosFiltrados = productos.filter(producto => {
       const categoriaProducto = (producto.categoria || '').toLowerCase().trim();
       const categoriaFiltroLower = categoria.toLowerCase().trim();
-      const match = categoriaProducto === categoriaFiltroLower;
-      
-      // Debug detallado para los primeros 3 productos
-      if (productos.indexOf(producto) < 3) {
-        console.log(`Producto "${producto.Nombre || producto.id}": categoria="${categoriaProducto}" vs filtro="${categoriaFiltroLower}" -> ${match ? 'MATCH' : 'NO MATCH'}`);
-      }
-      
-      return match;
+      return categoriaProducto === categoriaFiltroLower;
     });
-    
-    // Debug: verificar filtrado
-    console.log(`=== FILTRO APLICADO ===`);
-    console.log(`Categoría seleccionada: "${categoria}"`);
-    console.log(`Total de productos en array: ${productos.length}`);
-    console.log(`Productos encontrados: ${productosFiltrados.length}`);
-    if (productosFiltrados.length > 0) {
-      console.log('Ejemplos de productos filtrados:', productosFiltrados.slice(0, 3).map(p => ({
-        nombre: p.Nombre,
-        categoria: p.categoria,
-        id: p.id || p.ID
-      })));
-    }
   }
 
   // Renderizar productos filtrados (pasar array completo para mantener índices)
@@ -457,12 +407,9 @@ function inicializarFiltros() {
     
     btn.addEventListener('click', function() {
       const categoria = this.dataset.filter;
-      console.log('Botón de filtro clickeado:', categoria);
       filtrarPorCategoria(categoria);
     });
   });
-  
-  console.log('Filtros inicializados. Total de botones:', document.querySelectorAll('.filtro-btn').length);
 }
 
 /**

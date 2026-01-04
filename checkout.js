@@ -201,9 +201,6 @@ async function manejarEnvio(e) {
     };
     
     // Depuración: Mostrar datos en consola
-    console.log('Datos a enviar:', datosEnvio);
-    console.log('URL del script:', GOOGLE_SCRIPT_URL);
-    console.log('JSON stringificado:', JSON.stringify(datosEnvio));
     
     // Enviar a Google Sheets usando fetch
     // Google Apps Script puede recibir datos de varias formas
@@ -214,7 +211,6 @@ async function manejarEnvio(e) {
       body: JSON.stringify(datosEnvio)
     });
     
-    console.log('Datos enviados (no-cors mode, no hay respuesta)');
     
     // Redirigir a PayPal después del envío
     const totalNumero = total.toFixed(2);

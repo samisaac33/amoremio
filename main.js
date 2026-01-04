@@ -312,12 +312,13 @@ function crearTarjetaProductoHTML(producto, index) {
   return `
     <div class="product-card ${claseAgotado}" data-producto-index="${index}">
       <div class="product-image-container">
-        <img 
-          src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
-          alt="${producto.Nombre || 'Producto'}"
-          class="product-image"
-          loading="lazy"
-        >
+          <img 
+            src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
+            alt="${producto.Nombre || 'Producto'}"
+            class="product-image"
+            loading="lazy"
+            decoding="async"
+          >
         ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
       </div>
       <div class="product-info">

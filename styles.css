@@ -6,12 +6,7 @@
 
 :root {
   /* Paleta Minimalista Premium */
-  --bg-color: #FFFFFF;             /* Blanco */
-  --text-color: #000000;           /* Negro */
-  --white: #FFFFFF;
-  --black: #000000;
-  
-  /* Colores Principales (Compatibilidad) */
+  /* Colores Principales */
   --color-primary: #000000;        /* Negro */
   --color-primary-dark: #333333;   /* Negro más claro para hover */
   --color-accent: #000000;         
@@ -20,6 +15,12 @@
   --color-white: #FFFFFF;
   --color-text: #000000;           /* Negro */
   --color-text-light: #666666;     /* Gris medio */
+  
+  /* Alias para compatibilidad */
+  --bg-color: var(--color-background);
+  --text-color: var(--color-text);
+  --white: var(--color-white);
+  --black: var(--color-primary);
   
   /* Tipografía */
   --font-heading: 'Playfair Display', serif;
