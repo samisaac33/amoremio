@@ -40,7 +40,12 @@ function generateNavbar() {
           <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="nav-logo-img">
           Amore Mío
         </a>
-        <nav class="navbar-nav">
+        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <nav class="navbar-nav" id="navbarNav">
           <ul class="navbar-menu" id="navbarMenu">
             ${menuLinks}
           </ul>
@@ -465,3 +470,66 @@ window.updateCarritoCount = function() {
     }
   }
 };
+
+/**
+ * Inicializar menú móvil hamburguesa
+ */
+function inicializarMenuMovil() {
+  const menuToggle = document.getElementById('mobileMenuToggle');
+  const navbarNav = document.getElementById('navbarNav');
+  const body = document.body;
+  
+  if (!menuToggle || !navbarNav) return;
+  
+  menuToggle.addEventListener('click', function() {
+    const isOpen = navbarNav.classList.contains('mobile-menu-open');
+    
+    if (isOpen) {
+      navbarNav.classList.remove('mobile-menu-open');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      body.style.overflow = '';
+    } else {
+      navbarNav.classList.add('mobile-menu-open');
+      menuToggle.classList.add('active');
+      menuToggle.setAttribute('aria-expanded', 'true');
+      body.style.overflow = 'hidden';
+    }
+  });
+  
+  // Cerrar menú al hacer clic en un enlace
+  const menuLinks = navbarNav.querySelectorAll('a');
+  menuLinks.forEach(link => {
+    link.addEventListener('click', function() {
+      navbarNav.classList.remove('mobile-menu-open');
+      menuToggle.classList.remove('active');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      body.style.overflow = '';
+    });
+  });
+  
+  // Cerrar menú al hacer clic fuera
+  document.addEventListener('click', function(e) {
+    if (!navbarNav.contains(e.target) && !menuToggle.contains(e.target)) {
+      if (navbarNav.classList.contains('mobile-menu-open')) {
+        navbarNav.classList.remove('mobile-menu-open');
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        body.style.overflow = '';
+      }
+    }
+  });
+}
+
+// Inicializar menú móvil después de inyectar componentes
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(() => {
+      inicializarMenuMovil();
+    }, 150);
+  });
+} else {
+  setTimeout(() => {
+    inicializarMenuMovil();
+  }, 150);
+}
