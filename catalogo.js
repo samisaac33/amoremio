@@ -30,33 +30,57 @@ async function cargarProductos() {
     const data = await response.json();
     productos = Array.isArray(data) ? data : [];
 
+    // Debug: mostrar estructura del primer producto para identificar propiedades
+    if (productos.length > 0) {
+      console.log('Primer producto (estructura):', productos[0]);
+      console.log('Propiedades del primer producto:', Object.keys(productos[0]));
+    }
+
     // --- CLASIFICACIÓN AUTOMÁTICA POR PREFIJO ---
-    productos.forEach(p => {
-        // Buscar el ID en diferentes posibles propiedades (id, ID, Id, codigo, Codigo, etc.)
-        const id = String(p.id || p.ID || p.Id || p.codigo || p.Codigo || p.CODIGO || '').trim().toUpperCase();
+    productos.forEach((p, index) => {
+        // Buscar el ID en diferentes posibles propiedades
+        const idRaw = p.id || p.ID || p.Id || p.codigo || p.Codigo || p.CODIGO || p['Código'] || '';
+        const id = String(idRaw).trim().toUpperCase();
+        
+        // Debug: mostrar IDs de los primeros productos
+        if (index < 5) {
+          console.log(`Producto ${index + 1} - ID encontrado: "${id}" (raw: ${idRaw})`);
+        }
         
         // Verificar 'AF' primero porque es prefijo de dos letras
-        if (id.startsWith('AF')) {
+        if (id && id.startsWith('AF')) {
             p.categoria = 'Arreglos Fúnebres';
-        } else if (id.startsWith('B')) {
+        } else if (id && id.startsWith('B')) {
             p.categoria = 'Ramos';
-        } else if (id.startsWith('S')) {
+        } else if (id && id.startsWith('S')) {
             p.categoria = 'Arreglos Especiales';
-        } else if (id.startsWith('J')) {
+        } else if (id && id.startsWith('J')) {
             p.categoria = 'Arreglos en Floreros';
+        } else {
+            // Si no coincide, dejar sin categoría
+            console.warn(`Producto sin categoría - ID: "${id}"`, p);
         }
-        // Si no coincide con ningún prefijo, no se asigna categoría (para Complementos)
-        // Complementos por ahora vacío
     });
 
     // Debug: mostrar estadísticas de categorización
-    console.log('Productos cargados:', productos.length);
+    console.log('=== ESTADÍSTICAS DE PRODUCTOS ===');
+    console.log('Total de productos cargados:', productos.length);
     const categorias = {};
     productos.forEach(p => {
         const cat = p.categoria || 'Sin categoría';
         categorias[cat] = (categorias[cat] || 0) + 1;
     });
     console.log('Distribución por categorías:', categorias);
+    
+    // Mostrar algunos productos de cada categoría
+    Object.keys(categorias).forEach(cat => {
+      const productosCat = productos.filter(p => (p.categoria || 'Sin categoría') === cat);
+      console.log(`${cat} (${categorias[cat]} productos):`, productosCat.slice(0, 2).map(p => ({
+        id: p.id || p.ID || 'N/A',
+        nombre: p.Nombre || 'N/A',
+        categoria: p.categoria || 'Sin categoría'
+      })));
+    });
 
     if (productos.length === 0) {
       galeria.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles en este momento.</p>';
@@ -64,7 +88,18 @@ async function cargarProductos() {
       return;
     }
 
-    // Renderizar productos
+    // Inicializar filtro a "Todos" al cargar y asegurar que el botón esté activo
+    categoriaFiltro = 'Todos';
+    
+    // Asegurar que el botón "Todos" esté activo
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.filter === 'Todos') {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Renderizar productos (todos inicialmente)
     renderizarProductos(productos);
     loader.style.display = 'none';
 
@@ -210,12 +245,29 @@ function filtrarPorCategoria(categoria) {
   if (categoria !== 'Todos') {
     productosFiltrados = productos.filter(producto => {
       const categoriaProducto = (producto.categoria || '').toLowerCase().trim();
-      const categoriaFiltro = categoria.toLowerCase().trim();
-      return categoriaProducto === categoriaFiltro;
+      const categoriaFiltroLower = categoria.toLowerCase().trim();
+      const match = categoriaProducto === categoriaFiltroLower;
+      
+      // Debug detallado para los primeros 3 productos
+      if (productos.indexOf(producto) < 3) {
+        console.log(`Producto "${producto.Nombre || producto.id}": categoria="${categoriaProducto}" vs filtro="${categoriaFiltroLower}" -> ${match ? 'MATCH' : 'NO MATCH'}`);
+      }
+      
+      return match;
     });
     
     // Debug: verificar filtrado
-    console.log(`Filtro aplicado: "${categoria}" - Productos encontrados: ${productosFiltrados.length}`);
+    console.log(`=== FILTRO APLICADO ===`);
+    console.log(`Categoría seleccionada: "${categoria}"`);
+    console.log(`Total de productos en array: ${productos.length}`);
+    console.log(`Productos encontrados: ${productosFiltrados.length}`);
+    if (productosFiltrados.length > 0) {
+      console.log('Ejemplos de productos filtrados:', productosFiltrados.slice(0, 3).map(p => ({
+        nombre: p.Nombre,
+        categoria: p.categoria,
+        id: p.id || p.ID
+      })));
+    }
   }
 
   // Renderizar productos filtrados (pasar array completo para mantener índices)
@@ -230,12 +282,21 @@ function filtrarPorCategoria(categoria) {
  * Inicializar eventos de filtros
  */
 function inicializarFiltros() {
+  // Asegurar que "Todos" esté activo inicialmente
   document.querySelectorAll('.filtro-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.filter === 'Todos') {
+      btn.classList.add('active');
+    }
+    
     btn.addEventListener('click', function() {
       const categoria = this.dataset.filter;
+      console.log('Botón de filtro clickeado:', categoria);
       filtrarPorCategoria(categoria);
     });
   });
+  
+  console.log('Filtros inicializados. Total de botones:', document.querySelectorAll('.filtro-btn').length);
 }
 
 /**
