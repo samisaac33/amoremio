@@ -474,44 +474,98 @@ main {
     display: flex;
   }
 
+  /* Overlay oscuro cuando el menú está abierto */
+  .mobile-menu-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+  }
+
+  .mobile-menu-overlay.active {
+    display: block;
+    opacity: 1;
+  }
+
   .navbar-nav {
     position: fixed;
     top: 0;
-    right: -100%;
-    width: 80%;
-    max-width: 320px;
+    left: -100%;
+    width: 75%;
+    max-width: 300px;
     height: 100vh;
     background-color: var(--color-white);
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    transition: right var(--transition-normal);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    transition: left var(--transition-normal);
     z-index: 1001;
     overflow-y: auto;
-    padding: var(--spacing-xl) var(--spacing-md);
+    padding: var(--spacing-lg) var(--spacing-md);
     flex-direction: column;
     align-items: flex-start;
   }
 
   .navbar-nav.mobile-menu-open {
-    right: 0;
+    left: 0;
+  }
+  
+  /* Botón de cerrar en el menú */
+  .mobile-menu-close {
+    position: absolute;
+    top: var(--spacing-md);
+    right: var(--spacing-md);
+    width: 40px;
+    height: 40px;
+    background: transparent;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--color-text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1002;
+    padding: 0;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  .mobile-menu-close:focus {
+    outline: 2px solid var(--color-text);
+    outline-offset: 2px;
   }
 
   .navbar-menu {
     flex-direction: column;
     width: 100%;
-    gap: var(--spacing-md);
-    margin-top: var(--spacing-xl);
+    gap: 0;
+    margin-top: var(--spacing-lg);
+    list-style: none;
+    padding: 0;
   }
 
   .navbar-menu a {
-    font-size: 1.1rem;
-    padding: var(--spacing-sm) 0;
+    font-size: 1rem;
+    padding: var(--spacing-md) 0;
     display: block;
     width: 100%;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
     min-height: 48px;
     display: flex;
     align-items: center;
     -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
+    color: var(--color-text);
+    text-decoration: none;
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+  
+  .navbar-menu a:first-child {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   .navbar-logo {
@@ -1512,13 +1566,16 @@ main {
   margin-top: auto;
   padding-top: var(--spacing-sm);
   border-top: 1px solid rgba(0, 0, 0, 0.1);
+  flex-wrap: nowrap;
 }
 
 .product-price {
   font-family: var(--font-body);
   font-size: 1.1rem;
-  font-weight: 400;
+  font-weight: 600;
   color: var(--color-text);
+  flex-shrink: 0;
+  white-space: nowrap;
 }
 
 .product-btn {
@@ -1541,6 +1598,9 @@ main {
   min-height: var(--touch-target-min);
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   touch-action: manipulation;
+  flex-shrink: 0;
+  flex: 1;
+  max-width: 120px;
 }
 
 .product-btn:hover {
@@ -1747,23 +1807,39 @@ main {
   }
 
   .product-footer {
-    flex-direction: column;
-    align-items: stretch;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--spacing-xs);
+  }
+
+  .product-price {
+    font-size: 1rem;
+    font-weight: 600;
+    flex: 0 0 auto;
   }
 
   .product-btn {
-    width: 100%;
-    min-height: 48px;
-    padding: 0.875rem 1.5rem;
-    font-size: 0.9rem;
+    flex: 1;
+    min-height: 44px;
+    padding: 0.7rem 1rem;
+    font-size: 0.85rem;
+    max-width: none;
   }
   
   .product-name {
-    font-size: 1.1rem;
+    font-size: 1rem;
+    line-height: 1.3;
+    margin-bottom: var(--spacing-sm);
   }
   
-  .product-price {
-    font-size: 1rem;
+  .product-info {
+    padding: var(--spacing-sm) var(--spacing-sm);
+  }
+  
+  /* Más espacio para la imagen del producto */
+  .product-image-container {
+    padding-top: 100%;
   }
   
   .catalogo-section {
