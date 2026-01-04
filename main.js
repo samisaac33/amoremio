@@ -36,15 +36,17 @@ function generateNavbar() {
   return `
     <header class="navbar">
       <div class="navbar-container">
-        <a href="index.html" class="navbar-logo">
-          <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="nav-logo-img">
-          Amore Mío
-        </a>
-        <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú" aria-expanded="false">
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-          <span class="hamburger-line"></span>
-        </button>
+        <div class="navbar-left">
+          <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú" aria-expanded="false">
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+            <span class="hamburger-line"></span>
+          </button>
+          <a href="index.html" class="navbar-logo">
+            <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="nav-logo-img">
+            Amore Mío
+          </a>
+        </div>
         <nav class="navbar-nav" id="navbarNav">
           <ul class="navbar-menu" id="navbarMenu">
             ${menuLinks}

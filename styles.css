@@ -71,7 +71,7 @@ body {
   background-color: var(--color-white);
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all var(--transition-normal);
-  padding: var(--spacing-md) 0;
+  padding: var(--spacing-sm) 0;
 }
 
 .navbar-container {
@@ -84,13 +84,19 @@ body {
   position: relative;
 }
 
+.navbar-left {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
 /* Menú hamburguesa móvil */
 .mobile-menu-toggle {
   display: none;
   flex-direction: column;
   justify-content: space-around;
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   background: transparent;
   border: none;
   cursor: pointer;
@@ -98,6 +104,7 @@ body {
   z-index: 1002;
   transition: all var(--transition-fast);
   -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
 }
 
 .mobile-menu-toggle:focus {
@@ -106,7 +113,7 @@ body {
 }
 
 .hamburger-line {
-  width: 28px;
+  width: 22px;
   height: 2px;
   background-color: var(--color-text);
   transition: all var(--transition-normal);
@@ -135,6 +142,7 @@ body {
   display: flex;
   align-items: center;
   gap: var(--spacing-xs);
+  flex-shrink: 0;
 }
 
 .navbar-logo:hover {
@@ -142,7 +150,7 @@ body {
 }
 
 .nav-logo-img {
-  height: 45px;
+  height: 40px;
   width: auto;
   display: block;
 }
@@ -1682,7 +1690,8 @@ main {
 
 @media (max-width: 768px) {
   .masonry-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
   }
 
   .catalogo-title {
