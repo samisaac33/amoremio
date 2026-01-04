@@ -9,6 +9,9 @@
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <!-- Estilos -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -51,23 +54,38 @@
                                 <h2 class="form-title">Datos de Envío</h2>
                                 
                                 <div class="form-group">
-                                    <label for="direccion">Dirección *</label>
-                                    <input type="text" id="direccion" name="direccion" required>
+                                    <label for="nombre-apellido">Nombre y Apellido *</label>
+                                    <input type="text" id="nombre-apellido" name="nombre-apellido" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="celular">Número Celular *</label>
+                                    <input type="tel" id="celular" name="celular" required>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="fecha-hora-entrega">Fecha y Hora de Entrega *</label>
+                                    <input type="datetime-local" id="fecha-hora-entrega" name="fecha-hora-entrega" required>
                                 </div>
                                 
                                 <div class="form-group">
                                     <label for="ciudad">Ciudad *</label>
-                                    <input type="text" id="ciudad" name="ciudad" required>
+                                    <select id="ciudad" name="ciudad" required>
+                                        <option value="">Selecciona una ciudad</option>
+                                        <option value="Portoviejo">Portoviejo</option>
+                                        <option value="Manta">Manta</option>
+                                        <option value="Guayaquil">Guayaquil</option>
+                                        <option value="Quito">Quito</option>
+                                        <option value="Cuenca">Cuenca</option>
+                                        <option value="Ambato">Ambato</option>
+                                        <option value="Riobamba">Riobamba</option>
+                                        <option value="Otro">Otro</option>
+                                    </select>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="referencia">Referencia</label>
-                                    <input type="text" id="referencia" name="referencia">
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="fecha-entrega">Fecha de Entrega *</label>
-                                    <input type="date" id="fecha-entrega" name="fecha-entrega" required>
+                                    <label for="direccion-referencia">Dirección + Referencia *</label>
+                                    <textarea id="direccion-referencia" name="direccion-referencia" rows="2" required placeholder="Calle y número, color de casa, frente a..."></textarea>
                                 </div>
                                 
                                 <div class="form-group">
@@ -75,6 +93,16 @@
                                     <textarea id="mensaje-tarjeta" name="mensaje-tarjeta" rows="4"></textarea>
                                 </div>
                             </div>
+                        </div>
+                        
+                        <!-- Ubicación Exacta GPS -->
+                        <div class="gps-section">
+                            <h2 class="form-title">Ubicación Exacta (Opcional)</h2>
+                            <div id="map" class="map-container"></div>
+                            <input type="hidden" id="gps-coords" name="gps-coords">
+                            <button type="button" id="confirm-location-btn" class="confirm-location-btn">
+                                Confirmar Ubicación Marcada
+                            </button>
                         </div>
                         
                         <!-- Sección de Confirmación y Pago -->
@@ -94,6 +122,9 @@
     
     <!-- Scripts -->
     <script src="main.js"></script>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="checkout.js"></script>
 </body>
 </html>
