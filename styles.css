@@ -2062,6 +2062,9 @@ main {
 /* ========================================
    CHECKOUT
    ======================================== */
+.hidden {
+  display: none;
+}
 .checkout-container {
   background-color: var(--color-white);
   min-height: calc(100vh - 200px);

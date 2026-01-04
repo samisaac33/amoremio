@@ -4,11 +4,7 @@
  */
 
 // URL de Google Apps Script
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbpfvzFT4L86ww1dWbovO33cZFVDGk479aPnEQ7tCubo9lANBePKjWslBeVpfVkD71xg/exec';
-
-// Variables globales para el mapa
-let map;
-let marker;
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz7QhrNe97Dbf28spQ5945Iw7oYcf-CImn7gZvO1XvgLg9ZTzAcqtKniVjqjjzOhRM/exec';
 
 /**
  * Cargar carrito desde localStorage
@@ -42,31 +38,71 @@ function formatearPrecio(precio) {
 }
 
 /**
- * Inicializar mapa Leaflet
+ * Ocultar/mostrar campos de facturación según el tipo
  */
-function inicializarMapa() {
-  // Crear mapa centrado en Portoviejo, Ecuador
-  map = L.map('map').setView([-1.054, -80.454], 13);
+function actualizarCamposFacturacion() {
+  const tipoFactura = document.getElementById('tipo-factura').value;
+  const facturaIdGroup = document.getElementById('factura-id-group');
+  const facturaNombreGroup = document.getElementById('factura-nombre-group');
+  const facturaCiudadGroup = document.getElementById('factura-ciudad-group');
+  const facturaId = document.getElementById('factura-id');
+  const facturaNombre = document.getElementById('factura-nombre');
+  const facturaCiudad = document.getElementById('factura-ciudad');
   
-  // Agregar capa de tiles (OpenStreetMap)
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-  }).addTo(map);
+  if (tipoFactura === 'Consumidor Final') {
+    // Ocultar campos
+    facturaIdGroup.classList.add('hidden');
+    facturaNombreGroup.classList.add('hidden');
+    facturaCiudadGroup.classList.add('hidden');
+    
+    // Remover required
+    facturaId.removeAttribute('required');
+    facturaNombre.removeAttribute('required');
+    facturaCiudad.removeAttribute('required');
+    
+    // Limpiar valores
+    facturaId.value = '';
+    facturaNombre.value = '';
+    facturaCiudad.value = '';
+  } else {
+    // Mostrar campos
+    facturaIdGroup.classList.remove('hidden');
+    facturaNombreGroup.classList.remove('hidden');
+    facturaCiudadGroup.classList.remove('hidden');
+    
+    // Agregar required
+    facturaId.setAttribute('required', 'required');
+    facturaNombre.setAttribute('required', 'required');
+    facturaCiudad.setAttribute('required', 'required');
+  }
+}
+
+/**
+ * Aplicar regla de los $50
+ */
+function aplicarRegla50() {
+  const carrito = cargarCarrito();
+  const total = calcularTotal(carrito);
+  const tipoFacturaSelect = document.getElementById('tipo-factura');
+  const optionConsumidor = document.getElementById('option-consumidor');
   
-  // Agregar marcador draggable
-  marker = L.marker([-1.054, -80.454], {
-    draggable: true
-  }).addTo(map);
-  
-  // Event listener para cuando se mueve el marcador
-  marker.on('dragend', function(e) {
-    const latlng = marker.getLatLng();
-    document.getElementById('gps-coords').value = `${latlng.lat}, ${latlng.lng}`;
-  });
-  
-  // Inicializar input oculto con coordenadas iniciales
-  const latlng = marker.getLatLng();
-  document.getElementById('gps-coords').value = `${latlng.lat}, ${latlng.lng}`;
+  if (total > 50.00) {
+    // Deshabilitar opción "Consumidor Final"
+    if (optionConsumidor) {
+      optionConsumidor.disabled = true;
+    }
+    
+    // Si está seleccionado "Consumidor Final", cambiarlo a "Cédula"
+    if (tipoFacturaSelect.value === 'Consumidor Final') {
+      tipoFacturaSelect.value = 'Cédula';
+      actualizarCamposFacturacion();
+    }
+  } else {
+    // Habilitar opción "Consumidor Final"
+    if (optionConsumidor) {
+      optionConsumidor.disabled = false;
+    }
+  }
 }
 
 /**
@@ -88,8 +124,17 @@ function inicializarCheckout() {
     return;
   }
   
-  // Inicializar mapa
-  inicializarMapa();
+  // Aplicar regla de los $50
+  aplicarRegla50();
+  
+  // Actualizar campos de facturación según el tipo seleccionado
+  actualizarCamposFacturacion();
+  
+  // Event listener para cambios en tipo de factura
+  const tipoFacturaSelect = document.getElementById('tipo-factura');
+  if (tipoFacturaSelect) {
+    tipoFacturaSelect.addEventListener('change', actualizarCamposFacturacion);
+  }
   
   // Event listener para el formulario
   const checkoutForm = document.getElementById('checkout-form');
@@ -118,13 +163,24 @@ async function manejarEnvio(e) {
   
   try {
     // Recopilar datos del formulario
-    const nombre = document.getElementById('nombre').value;
+    const tipoFactura = document.getElementById('tipo-factura').value;
+    const destinatario = document.getElementById('destinatario').value;
     const celular = document.getElementById('celular').value;
-    const entrega = document.getElementById('entrega').value;
-    const ciudad = document.getElementById('ciudad').value;
+    const fechaEntrega = document.getElementById('fecha-entrega').value;
+    const ciudadEntrega = document.getElementById('ciudad-entrega').value;
     const direccion = document.getElementById('direccion').value;
-    const gps = document.getElementById('gps-coords').value || '';
     const mensaje = document.getElementById('mensaje').value || '';
+    const facturaEmail = document.getElementById('factura-email').value;
+    
+    // Datos de facturación
+    let facturaId, facturaNombre;
+    if (tipoFactura === 'Consumidor Final') {
+      facturaId = 'N/A';
+      facturaNombre = 'N/A';
+    } else {
+      facturaId = document.getElementById('factura-id').value;
+      facturaNombre = document.getElementById('factura-nombre').value;
+    }
     
     // Obtener carrito y total
     const carrito = cargarCarrito();
@@ -132,15 +188,17 @@ async function manejarEnvio(e) {
     
     // Preparar datos para enviar con las claves exactas requeridas
     const datosEnvio = {
-      nombre: nombre,
+      destinatario: destinatario,
       celular: celular,
-      entrega: entrega,
-      ciudad: ciudad,
+      fecha_entrega: fechaEntrega,
+      ciudad_entrega: ciudadEntrega,
       direccion: direccion,
-      gps: gps,
       mensaje: mensaje,
       total: total,
-      items: carrito
+      items: carrito,
+      factura_tipo: tipoFactura,
+      factura_id: facturaId,
+      factura_nombre: facturaNombre
     };
     
     // Enviar a Google Sheets usando fetch
