@@ -73,13 +73,19 @@ body {
    NAVBAR / HEADER
    ======================================== */
 .navbar {
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  background-color: var(--color-white);
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 1000 !important;
+  background-color: var(--color-white) !important;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   transition: all var(--transition-normal);
   padding: var(--spacing-sm) 0;
+  width: 100%;
+  will-change: transform;
+  /* Asegurar que el header siempre se muestre */
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
 
 .navbar-container {
@@ -192,6 +198,12 @@ body {
   font-family: var(--font-body);
   text-transform: none;
   letter-spacing: 0;
+}
+
+.navbar-menu a::before,
+.navbar-menu a::after {
+  display: none !important;
+  content: none !important;
 }
 
 .navbar-menu a:hover {
