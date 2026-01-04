@@ -346,6 +346,19 @@ function crearTarjetaProducto(producto, index) {
   const tieneEtiqueta = producto.Etiqueta && producto.Etiqueta.trim() !== '';
   const claseAgotado = !disponible ? 'agotado' : '';
   const precio = formatearPrecio(producto.Precio);
+  
+  // Determinar el tipo de producto basado en la categoría
+  const categoria = producto.categoria || '';
+  let tipoProducto = 'Ramo de Flores';
+  if (categoria === 'Arreglos en Floreros') {
+    tipoProducto = 'Arreglo en Florero';
+  } else if (categoria === 'Arreglos Especiales') {
+    tipoProducto = 'Arreglo Especial';
+  } else if (categoria === 'Arreglos Fúnebres') {
+    tipoProducto = 'Arreglo Fúnebre';
+  } else if (categoria === 'Ramos') {
+    tipoProducto = 'Ramo de Flores';
+  }
 
   return `
     <div class="product-card ${claseAgotado}" data-categoria="${producto.categoria || ''}" data-producto-index="${index}">
@@ -359,6 +372,7 @@ function crearTarjetaProducto(producto, index) {
         ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
       </div>
       <div class="product-info">
+        <p class="product-type">${tipoProducto}</p>
         <h3 class="product-name">${producto.Nombre || 'Sin nombre'}</h3>
         <div class="product-footer">
           <span class="product-price">${precio}</span>
