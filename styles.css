@@ -535,13 +535,20 @@ main {
     left: 0;
     background-color: #ffffff !important;
     opacity: 1 !important;
+    pointer-events: auto !important;
+    z-index: 9999 !important;
+  }
+  
+  /* Asegurar que todos los elementos del menú sean clickeables */
+  .navbar-nav.mobile-menu-open * {
+    pointer-events: auto !important;
   }
   
   /* Cabecera del menú móvil */
   .mobile-menu-header {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
     padding: var(--spacing-md);
     border-bottom: 1px solid rgba(0, 0, 0, 0.08);
@@ -551,6 +558,12 @@ main {
     top: 0;
     z-index: 10;
     box-sizing: border-box;
+  }
+  
+  /* Ocultar logo en el menú móvil */
+  .mobile-menu-logo,
+  .mobile-menu-logo-text {
+    display: none !important;
   }
   
   /* Botón de cerrar en el menú */

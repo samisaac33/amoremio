@@ -30,7 +30,7 @@ function generateNavbar() {
   ];
 
   const menuLinks = menuItems.map(item => 
-    `<li><a href="#" class="menu-link" data-categoria="${item.categoria}">${item.text}</a></li>`
+    `<li><a href="catalogo.html?categoria=${encodeURIComponent(item.categoria)}" class="menu-link" data-categoria="${item.categoria}">${item.text}</a></li>`
   ).join('');
 
   return `
@@ -53,9 +53,6 @@ function generateNavbar() {
             <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
               <i class="fas fa-times"></i>
             </button>
-            <a href="index.html" class="mobile-menu-logo">
-              <span class="mobile-menu-logo-text">AMORE MÍO</span>
-            </a>
           </div>
           <!-- Lista de enlaces -->
           <ul class="navbar-menu" id="navbarMenu">
@@ -543,17 +540,26 @@ function inicializarMenuMovil() {
     });
   }
   
-  // Cerrar menú al hacer clic en un enlace o en el logo
-  const menuLinks = navbarNav.querySelectorAll('a');
+  // Cerrar menú al hacer clic en un enlace del menú
+  const menuLinks = navbarNav.querySelectorAll('.navbar-menu a');
   menuLinks.forEach(link => {
-    link.addEventListener('click', function() {
-      cerrarMenu();
+    link.addEventListener('click', function(e) {
+      // Permitir la navegación normal
+      const href = this.getAttribute('href');
+      if (href && href !== '#') {
+        cerrarMenu();
+        // La navegación se hará automáticamente por el href
+      } else {
+        e.preventDefault();
+        cerrarMenu();
+      }
     });
   });
   
-  // Prevenir propagación de clicks dentro del menú para evitar cierres accidentales
+  // Prevenir que el overlay bloquee clicks en el menú
   navbarNav.addEventListener('click', function(e) {
     e.stopPropagation();
+    // Permitir que los clicks pasen normalmente
   });
 }
 
