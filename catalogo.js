@@ -32,11 +32,12 @@ async function cargarProductos() {
 
     // --- CLASIFICACIÓN AUTOMÁTICA POR PREFIJO ---
     productos.forEach(p => {
-        const id = p.id.toUpperCase();
-        if (id.startsWith('B')) p.categoria = 'Ramos';
-        else if (id.startsWith('J')) p.categoria = 'Arreglos en Floreros';
+        const id = (p.id || p.ID || '').toString().toUpperCase();
+        // Verificar 'AF' primero porque es prefijo de dos letras
+        if (id.startsWith('AF')) p.categoria = 'Arreglos Fúnebres';
+        else if (id.startsWith('B')) p.categoria = 'Ramos';
         else if (id.startsWith('S')) p.categoria = 'Arreglos Especiales';
-        else if (id.startsWith('AF')) p.categoria = 'Arreglos Fúnebres';
+        else if (id.startsWith('J')) p.categoria = 'Arreglos en Floreros';
         // Complementos por ahora vacío
     });
 
