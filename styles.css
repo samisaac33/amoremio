@@ -1540,7 +1540,7 @@ main {
 
 /* Información del producto */
 .product-info {
-  padding: var(--spacing-sm) var(--spacing-sm) var(--spacing-xs);
+  padding: var(--spacing-sm) var(--spacing-sm) 0;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -1568,9 +1568,9 @@ main {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.35rem;
   margin-top: auto;
-  padding: 0.75rem var(--spacing-sm) var(--spacing-sm);
+  padding: 0.5rem 0.75rem 0.75rem;
   border-top: none;
   flex-wrap: nowrap;
 }
@@ -1583,10 +1583,11 @@ main {
   flex-shrink: 0;
   white-space: nowrap;
   line-height: 1;
+  margin: 0;
 }
 
 .product-btn {
-  padding: 0.5rem 1rem;
+  padding: 0.5rem 0.9rem;
   font-family: var(--font-body);
   font-size: 0.75rem;
   font-weight: 600;
@@ -1605,7 +1606,7 @@ main {
   text-transform: uppercase;
   letter-spacing: 0.3px;
   height: 32px;
-  min-width: 90px;
+  min-width: 85px;
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   touch-action: manipulation;
   flex-shrink: 0;
@@ -1757,9 +1758,13 @@ main {
 }
 
 @media (max-width: 768px) {
+  .catalogo-section {
+    padding: var(--spacing-lg) var(--spacing-xs);
+  }
+  
   .masonry-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
   }
   
   .product-card {
@@ -1836,8 +1841,8 @@ main {
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 0.4rem;
-    padding: 0.6rem var(--spacing-xs) var(--spacing-xs);
+    gap: 0.3rem;
+    padding: 0.45rem 0.5rem 0.65rem;
   }
 
   .product-price {
@@ -1845,15 +1850,16 @@ main {
     font-weight: 600;
     flex: 0 0 auto;
     line-height: 1;
+    margin: 0;
   }
 
   .product-btn {
-    height: 34px;
-    min-height: 34px;
-    padding: 0.5rem 0.85rem;
-    font-size: 0.75rem;
+    height: 32px;
+    min-height: 32px;
+    padding: 0.45rem 0.75rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    min-width: 80px;
+    min-width: 75px;
     letter-spacing: 0.2px;
     flex: 0 0 auto;
   }
@@ -1867,7 +1873,7 @@ main {
   }
   
   .product-info {
-    padding: var(--spacing-xs) var(--spacing-xs) var(--spacing-xs);
+    padding: var(--spacing-xs) var(--spacing-xs) 0;
   }
   
   /* Más espacio para la imagen del producto */
