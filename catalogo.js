@@ -11,6 +11,36 @@ let productos = [];
 let categoriaFiltro = 'Todos';
 
 /**
+ * Asignar categoría automáticamente basándose en el prefijo del id
+ * @param {Object} producto - Producto con propiedad id
+ * @returns {string} Categoría asignada
+ */
+function asignarCategoriaPorId(producto) {
+  const id = (producto.id || producto.ID || '').toString().trim();
+  
+  // Verificar prefijo 'AF' primero (dos letras)
+  if (id.startsWith('AF')) {
+    return 'Arreglos Fúnebres';
+  }
+  
+  // Verificar prefijos de una letra
+  if (id.startsWith('B')) {
+    return 'Ramos';
+  }
+  
+  if (id.startsWith('S')) {
+    return 'Arreglos Especiales';
+  }
+  
+  if (id.startsWith('J')) {
+    return 'Arreglos en Floreros';
+  }
+  
+  // Si no coincide con ningún prefijo, retornar categoría existente o vacío
+  return producto.Categoria || '';
+}
+
+/**
  * Cargar productos desde la API
  */
 async function cargarProductos() {
@@ -35,6 +65,15 @@ async function cargarProductos() {
       loader.style.display = 'none';
       return;
     }
+
+    // Aplicar categorización automática a todos los productos
+    productos = productos.map(producto => {
+      const categoriaAsignada = asignarCategoriaPorId(producto);
+      return {
+        ...producto,
+        Categoria: categoriaAsignada
+      };
+    });
 
     // Renderizar productos
     renderizarProductos(productos);
@@ -63,7 +102,12 @@ function renderizarProductos(productosFiltrados) {
   productosFiltradosActuales = productosFiltrados; // Guardar referencia
 
   if (productosFiltrados.length === 0) {
-    galeria.innerHTML = '<p class="mensaje-vacio">No hay productos en esta categoría.</p>';
+    // Mensaje especial para la categoría "Complementos"
+    if (categoriaFiltro === 'Complementos') {
+      galeria.innerHTML = '<p class="mensaje-vacio">Próximamente agregaremos productos a esta categoría.</p>';
+    } else {
+      galeria.innerHTML = '<p class="mensaje-vacio">No hay productos en esta categoría.</p>';
+    }
     return;
   }
 
@@ -167,7 +211,7 @@ function filtrarPorCategoria(categoria) {
   // Actualizar botones activos
   document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.classList.remove('active');
-    if (btn.dataset.categoria === categoria) {
+    if (btn.dataset.filter === categoria) {
       btn.classList.add('active');
     }
   });
@@ -194,7 +238,7 @@ function filtrarPorCategoria(categoria) {
 function inicializarFiltros() {
   document.querySelectorAll('.filtro-btn').forEach(btn => {
     btn.addEventListener('click', function() {
-      const categoria = this.dataset.categoria;
+      const categoria = this.dataset.filter;
       filtrarPorCategoria(categoria);
     });
   });
