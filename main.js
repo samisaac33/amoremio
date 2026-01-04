@@ -48,9 +48,16 @@ function generateNavbar() {
           </a>
         </div>
         <nav class="navbar-nav" id="navbarNav">
-          <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
-            <i class="fas fa-times"></i>
-          </button>
+          <!-- Cabecera del menú móvil -->
+          <div class="mobile-menu-header">
+            <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
+              <i class="fas fa-times"></i>
+            </button>
+            <a href="index.html" class="mobile-menu-logo">
+              <span class="mobile-menu-logo-text">AMORE MÍO</span>
+            </a>
+          </div>
+          <!-- Lista de enlaces -->
           <ul class="navbar-menu" id="navbarMenu">
             ${menuLinks}
           </ul>
@@ -520,9 +527,11 @@ function inicializarMenuMovil() {
     }
   });
   
-  // Cerrar al hacer clic en el overlay
-  overlay.addEventListener('click', function() {
-    cerrarMenu();
+  // Cerrar al hacer clic en el overlay (solo si se hace clic directamente en el overlay)
+  overlay.addEventListener('click', function(e) {
+    if (e.target === overlay) {
+      cerrarMenu();
+    }
   });
   
   // Cerrar al hacer clic en el botón X
@@ -534,12 +543,17 @@ function inicializarMenuMovil() {
     });
   }
   
-  // Cerrar menú al hacer clic en un enlace
+  // Cerrar menú al hacer clic en un enlace o en el logo
   const menuLinks = navbarNav.querySelectorAll('a');
   menuLinks.forEach(link => {
     link.addEventListener('click', function() {
       cerrarMenu();
     });
+  });
+  
+  // Prevenir propagación de clicks dentro del menú para evitar cierres accidentales
+  navbarNav.addEventListener('click', function(e) {
+    e.stopPropagation();
   });
 }
 
