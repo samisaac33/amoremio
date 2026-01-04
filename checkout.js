@@ -170,7 +170,6 @@ async function manejarEnvio(e) {
     const ciudadEntrega = document.getElementById('ciudad-entrega').value;
     const direccion = document.getElementById('direccion').value;
     const mensaje = document.getElementById('mensaje').value || '';
-    const facturaEmail = document.getElementById('factura-email').value;
     
     // Datos de facturación
     let facturaId, facturaNombre;
@@ -201,16 +200,21 @@ async function manejarEnvio(e) {
       factura_nombre: facturaNombre
     };
     
-    // Enviar a Google Sheets usando fetch
-    const formData = new FormData();
-    formData.append('data', JSON.stringify(datosEnvio));
+    // Depuración: Mostrar datos en consola
+    console.log('Datos a enviar:', datosEnvio);
+    console.log('URL del script:', GOOGLE_SCRIPT_URL);
+    console.log('JSON stringificado:', JSON.stringify(datosEnvio));
     
-    // Enviar con no-cors mode para evitar errores CORS
+    // Enviar a Google Sheets usando fetch
+    // Google Apps Script puede recibir datos de varias formas
+    // Intentamos enviar como JSON directamente en el body
     await fetch(GOOGLE_SCRIPT_URL, {
       method: 'POST',
       mode: 'no-cors',
-      body: formData
+      body: JSON.stringify(datosEnvio)
     });
+    
+    console.log('Datos enviados (no-cors mode, no hay respuesta)');
     
     // Redirigir a PayPal después del envío
     const totalNumero = total.toFixed(2);
