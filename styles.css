@@ -1844,14 +1844,39 @@ main {
     letter-spacing: -0.2px;
   }
 
+  /* Tarjetas de producto - diseño compacto móvil */
+  .product-card {
+    overflow: visible;
+  }
+
+  .product-info {
+    padding: var(--spacing-xs) var(--spacing-xs) 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .product-name {
+    font-size: 0.9rem;
+    line-height: 1.3;
+    margin-bottom: 0.3rem;
+    margin-top: 0;
+    font-weight: 500;
+    min-height: 2.4em;
+    flex-shrink: 0;
+  }
+
   .product-footer {
+    display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    gap: 0.4rem;
-    padding: 0.4rem var(--spacing-xs) var(--spacing-xs);
+    gap: 0.35rem;
+    margin-top: 0;
+    padding: 0.35rem var(--spacing-xs) var(--spacing-xs);
     width: 100%;
     box-sizing: border-box;
+    flex-shrink: 0;
   }
 
   .product-price {
@@ -1860,33 +1885,25 @@ main {
     flex: 0 0 auto;
     line-height: 1;
     margin: 0;
+    padding: 0;
   }
 
   .product-btn {
-    height: 32px;
-    min-height: 32px;
-    padding: 0.5rem 0.7rem;
-    font-size: 0.7rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 30px;
+    min-height: 30px;
+    padding: 0.45rem 0.65rem;
+    font-size: 0.65rem;
     font-weight: 600;
-    min-width: 70px;
-    max-width: 100px;
-    letter-spacing: 0.2px;
+    min-width: 65px;
+    max-width: 90px;
+    letter-spacing: 0.15px;
     flex: 0 0 auto;
     box-sizing: border-box;
-  }
-  
-  .product-name {
-    font-size: 0.9rem;
-    line-height: 1.3;
-    margin-bottom: 0.4rem;
-    margin-top: 0;
-    font-weight: 500;
-    min-height: 2.4em;
-  }
-  
-  .product-info {
-    padding: var(--spacing-xs) var(--spacing-xs) 0;
-    min-height: 0;
+    white-space: nowrap;
   }
   
   /* Más espacio para la imagen del producto */
