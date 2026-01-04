@@ -359,8 +359,8 @@ main {
    FOOTER
    ======================================== */
 .footer {
-  background-color: #fce4ec;
-  color: #000000;
+  background-color: #111;
+  color: #FFFFFF;
   padding: var(--spacing-xl) 0;
   margin-top: auto;
 }
@@ -404,7 +404,7 @@ main {
   font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 400;
-  color: #000000;
+  color: #FFFFFF;
   margin: 0;
   padding: 0;
   line-height: 1;
@@ -413,7 +413,7 @@ main {
 .footer-tagline {
   font-family: var(--font-body);
   font-size: 0.95rem;
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   margin: 0;
   padding: 0;
 }
@@ -424,7 +424,7 @@ main {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 1px;
-  color: #000000;
+  color: #FFFFFF;
   margin: 0 0 var(--spacing-md) 0;
   padding: 0;
 }
@@ -436,7 +436,7 @@ main {
 }
 
 .footer-social-link {
-  color: #000000;
+  color: #FFFFFF;
   font-size: 1.5rem;
   text-decoration: none;
   transition: color var(--transition-fast), transform var(--transition-fast);
@@ -444,7 +444,7 @@ main {
 }
 
 .footer-social-link:hover {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
@@ -456,7 +456,7 @@ main {
 }
 
 .footer-payment-link {
-  color: #000000;
+  color: #FFFFFF;
   font-size: 1.8rem;
   text-decoration: none;
   transition: color var(--transition-fast), transform var(--transition-fast);
@@ -464,21 +464,21 @@ main {
 }
 
 .footer-payment-link:hover {
-  color: rgba(0, 0, 0, 0.7);
+  color: rgba(255, 255, 255, 0.7);
   transform: translateY(-2px);
 }
 
 .footer-payment-icon {
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.6);
   font-size: 1.8rem;
   display: inline-block;
 }
 
 .footer-bottom {
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
   padding-top: var(--spacing-md);
   text-align: center;
-  color: rgba(0, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.5);
   font-size: 0.85rem;
   font-family: var(--font-body);
 }
