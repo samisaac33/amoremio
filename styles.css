@@ -502,12 +502,27 @@ main {
     opacity: 0;
     transition: opacity var(--transition-normal);
     pointer-events: none;
+    touch-action: none;
   }
 
   .mobile-menu-overlay.active {
     display: block;
     opacity: 1;
     pointer-events: auto;
+    touch-action: auto;
+  }
+  
+  /* Crear un área invisible en el overlay donde está el menú */
+  .mobile-menu-overlay.active::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 75%;
+    max-width: 300px;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
   }
 
   .navbar-nav {
@@ -521,14 +536,15 @@ main {
     opacity: 1 !important;
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
     transition: left 0.3s ease-out;
-    z-index: 9999 !important;
+    z-index: 10000 !important;
     overflow-y: auto;
     overflow-x: hidden;
     padding: 0;
     flex-direction: column;
     align-items: flex-start;
-    pointer-events: auto;
+    pointer-events: auto !important;
     -webkit-overflow-scrolling: touch;
+    touch-action: auto;
   }
 
   .navbar-nav.mobile-menu-open {
@@ -536,12 +552,22 @@ main {
     background-color: #ffffff !important;
     opacity: 1 !important;
     pointer-events: auto !important;
-    z-index: 9999 !important;
+    z-index: 10000 !important;
+    touch-action: auto !important;
   }
   
   /* Asegurar que todos los elementos del menú sean clickeables */
   .navbar-nav.mobile-menu-open * {
     pointer-events: auto !important;
+    touch-action: auto !important;
+  }
+  
+  /* Asegurar que los enlaces sean completamente funcionales */
+  .navbar-nav.mobile-menu-open a {
+    pointer-events: auto !important;
+    touch-action: auto !important;
+    cursor: pointer !important;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1) !important;
   }
   
   /* Cabecera del menú móvil */

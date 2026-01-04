@@ -498,15 +498,21 @@ function inicializarMenuMovil() {
     body.appendChild(overlay);
   }
   
+  let isMenuOpen = false;
+  
   function abrirMenu() {
+    isMenuOpen = true;
     navbarNav.classList.add('mobile-menu-open');
     menuToggle.classList.add('active');
     menuToggle.setAttribute('aria-expanded', 'true');
     overlay.classList.add('active');
     body.style.overflow = 'hidden';
+    // Asegurar que el menú esté por encima
+    navbarNav.style.zIndex = '10000';
   }
   
   function cerrarMenu() {
+    isMenuOpen = false;
     navbarNav.classList.remove('mobile-menu-open');
     menuToggle.classList.remove('active');
     menuToggle.setAttribute('aria-expanded', 'false');
@@ -514,19 +520,35 @@ function inicializarMenuMovil() {
     body.style.overflow = '';
   }
   
+  // Toggle del menú
   menuToggle.addEventListener('click', function(e) {
+    e.preventDefault();
     e.stopPropagation();
-    const isOpen = navbarNav.classList.contains('mobile-menu-open');
-    if (isOpen) {
+    if (isMenuOpen) {
       cerrarMenu();
     } else {
       abrirMenu();
     }
   });
   
-  // Cerrar al hacer clic en el overlay (solo si se hace clic directamente en el overlay)
+  // Cerrar al hacer clic en el overlay (solo fuera del menú)
   overlay.addEventListener('click', function(e) {
-    if (e.target === overlay) {
+    // Calcular si el click fue fuera del área del menú
+    const menuWidth = window.innerWidth * 0.75;
+    const maxMenuWidth = 300;
+    const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
+    
+    if (e.clientX > actualMenuWidth && isMenuOpen) {
+      cerrarMenu();
+    }
+  });
+  
+  overlay.addEventListener('touchstart', function(e) {
+    const menuWidth = window.innerWidth * 0.75;
+    const maxMenuWidth = 300;
+    const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
+    
+    if (e.touches[0] && e.touches[0].clientX > actualMenuWidth && isMenuOpen) {
       cerrarMenu();
     }
   });
@@ -535,31 +557,39 @@ function inicializarMenuMovil() {
   const closeButton = document.getElementById('mobileMenuClose');
   if (closeButton) {
     closeButton.addEventListener('click', function(e) {
+      e.preventDefault();
       e.stopPropagation();
       cerrarMenu();
     });
   }
   
-  // Cerrar menú al hacer clic en un enlace del menú
+  // Manejar clicks en los enlaces del menú
   const menuLinks = navbarNav.querySelectorAll('.navbar-menu a');
   menuLinks.forEach(link => {
     link.addEventListener('click', function(e) {
-      // Permitir la navegación normal
       const href = this.getAttribute('href');
-      if (href && href !== '#') {
-        cerrarMenu();
-        // La navegación se hará automáticamente por el href
-      } else {
+      // Cerrar el menú inmediatamente
+      cerrarMenu();
+      // Permitir navegación normal - no prevenir default si hay href válido
+      if (!href || href === '#' || href === '') {
         e.preventDefault();
-        cerrarMenu();
       }
+      // La navegación se hará automáticamente
     });
   });
   
-  // Prevenir que el overlay bloquee clicks en el menú
+  // Prevenir que clicks dentro del menú cierren el overlay
   navbarNav.addEventListener('click', function(e) {
     e.stopPropagation();
-    // Permitir que los clicks pasen normalmente
+  });
+  
+  // Prevenir propagación también en elementos hijos
+  navbarNav.addEventListener('touchstart', function(e) {
+    e.stopPropagation();
+  });
+  
+  navbarNav.addEventListener('touchend', function(e) {
+    e.stopPropagation();
   });
 }
 
