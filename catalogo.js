@@ -11,36 +11,6 @@ let productos = [];
 let categoriaFiltro = 'Todos';
 
 /**
- * Asignar categoría automáticamente basándose en el prefijo del id
- * @param {Object} producto - Producto con propiedad id
- * @returns {string} Categoría asignada
- */
-function asignarCategoriaPorId(producto) {
-  const id = (producto.id || producto.ID || '').toString().trim();
-  
-  // Verificar prefijo 'AF' primero (dos letras)
-  if (id.startsWith('AF')) {
-    return 'Arreglos Fúnebres';
-  }
-  
-  // Verificar prefijos de una letra
-  if (id.startsWith('B')) {
-    return 'Ramos';
-  }
-  
-  if (id.startsWith('S')) {
-    return 'Arreglos Especiales';
-  }
-  
-  if (id.startsWith('J')) {
-    return 'Arreglos en Floreros';
-  }
-  
-  // Si no coincide con ningún prefijo, retornar categoría existente o vacío
-  return producto.Categoria || '';
-}
-
-/**
  * Cargar productos desde la API
  */
 async function cargarProductos() {
@@ -60,20 +30,21 @@ async function cargarProductos() {
     const data = await response.json();
     productos = Array.isArray(data) ? data : [];
 
+    // --- CLASIFICACIÓN AUTOMÁTICA POR PREFIJO ---
+    productos.forEach(p => {
+        const id = p.id.toUpperCase();
+        if (id.startsWith('B')) p.categoria = 'Ramos';
+        else if (id.startsWith('J')) p.categoria = 'Arreglos en Floreros';
+        else if (id.startsWith('S')) p.categoria = 'Arreglos Especiales';
+        else if (id.startsWith('AF')) p.categoria = 'Arreglos Fúnebres';
+        // Complementos por ahora vacío
+    });
+
     if (productos.length === 0) {
       galeria.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles en este momento.</p>';
       loader.style.display = 'none';
       return;
     }
-
-    // Aplicar categorización automática a todos los productos
-    productos = productos.map(producto => {
-      const categoriaAsignada = asignarCategoriaPorId(producto);
-      return {
-        ...producto,
-        Categoria: categoriaAsignada
-      };
-    });
 
     // Renderizar productos
     renderizarProductos(productos);
@@ -159,7 +130,7 @@ function crearTarjetaProducto(producto, index) {
   const precio = formatearPrecio(producto.Precio);
 
   return `
-    <div class="product-card ${claseAgotado}" data-categoria="${producto.Categoria || ''}" data-producto-index="${index}">
+    <div class="product-card ${claseAgotado}" data-categoria="${producto.categoria || ''}" data-producto-index="${index}">
       <div class="product-image-container">
         <img 
           src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
@@ -220,7 +191,7 @@ function filtrarPorCategoria(categoria) {
   let productosFiltrados = productos;
   if (categoria !== 'Todos') {
     productosFiltrados = productos.filter(producto => 
-      (producto.Categoria || '').toLowerCase() === categoria.toLowerCase()
+      (producto.categoria || '').toLowerCase() === categoria.toLowerCase()
     );
   }
 
