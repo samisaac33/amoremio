@@ -11,7 +11,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Leaflet CSS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
     <!-- Estilos -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -24,48 +23,33 @@
                     
                     <form id="checkout-form" class="checkout-form-main">
                         <div class="checkout-content">
-                            <!-- Columna Izq: Datos de Facturación -->
+                            <!-- Columna 1: Tus Datos -->
                             <div class="checkout-column">
-                                <h2 class="form-title">Datos de Facturación</h2>
+                                <h2 class="form-title">Tus Datos</h2>
                                 
                                 <div class="form-group">
-                                    <label for="nombre">Nombre *</label>
+                                    <label for="nombre">Nombre y Apellido *</label>
                                     <input type="text" id="nombre" name="nombre" required>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="email">Email *</label>
-                                    <input type="email" id="email" name="email" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="telefono">Teléfono *</label>
-                                    <input type="tel" id="telefono" name="telefono" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="cedula">Cédula *</label>
-                                    <input type="text" id="cedula" name="cedula" required>
-                                </div>
-                            </div>
-                            
-                            <!-- Columna Der: Datos de Envío -->
-                            <div class="checkout-column">
-                                <h2 class="form-title">Datos de Envío</h2>
-                                
-                                <div class="form-group">
-                                    <label for="nombre-apellido">Nombre y Apellido *</label>
-                                    <input type="text" id="nombre-apellido" name="nombre-apellido" required>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label for="celular">Número Celular *</label>
+                                    <label for="celular">Teléfono *</label>
                                     <input type="tel" id="celular" name="celular" required>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="fecha-hora-entrega">Fecha y Hora de Entrega *</label>
-                                    <input type="datetime-local" id="fecha-hora-entrega" name="fecha-hora-entrega" required>
+                                    <label for="email">Email (Opcional)</label>
+                                    <input type="email" id="email" name="email">
+                                </div>
+                            </div>
+                            
+                            <!-- Columna 2: Entrega -->
+                            <div class="checkout-column">
+                                <h2 class="form-title">Entrega</h2>
+                                
+                                <div class="form-group">
+                                    <label for="entrega">Fecha y Hora de Entrega *</label>
+                                    <input type="datetime-local" id="entrega" name="entrega" required>
                                 </div>
                                 
                                 <div class="form-group">
@@ -74,38 +58,34 @@
                                         <option value="">Selecciona una ciudad</option>
                                         <option value="Portoviejo">Portoviejo</option>
                                         <option value="Manta">Manta</option>
-                                        <option value="Guayaquil">Guayaquil</option>
-                                        <option value="Quito">Quito</option>
-                                        <option value="Cuenca">Cuenca</option>
-                                        <option value="Ambato">Ambato</option>
-                                        <option value="Riobamba">Riobamba</option>
+                                        <option value="Chone">Chone</option>
+                                        <option value="Montecristi">Montecristi</option>
+                                        <option value="Jipijapa">Jipijapa</option>
                                         <option value="Otro">Otro</option>
                                     </select>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="direccion-referencia">Dirección + Referencia *</label>
-                                    <textarea id="direccion-referencia" name="direccion-referencia" rows="2" required placeholder="Calle y número, color de casa, frente a..."></textarea>
+                                    <label for="direccion">Dirección *</label>
+                                    <textarea id="direccion" name="direccion" rows="3" required placeholder="Calle principal, secundaria y referencias visuales de la casa"></textarea>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="mensaje-tarjeta">Mensaje para la Tarjeta</label>
-                                    <textarea id="mensaje-tarjeta" name="mensaje-tarjeta" rows="4"></textarea>
+                                    <label for="mensaje">Dedicatoria para la tarjeta</label>
+                                    <textarea id="mensaje" name="mensaje" rows="3" placeholder="Mensaje opcional para la tarjeta"></textarea>
                                 </div>
                             </div>
                         </div>
                         
-                        <!-- Ubicación Exacta GPS -->
+                        <!-- Selector de Ubicación GPS -->
                         <div class="gps-section">
-                            <h2 class="form-title">Ubicación Exacta (Opcional)</h2>
+                            <h2 class="form-title">Ubicación Exacta</h2>
+                            <p class="map-help-text">Mueve el pin rojo hasta la ubicación exacta de entrega</p>
                             <div id="map" class="map-container"></div>
                             <input type="hidden" id="gps-coords" name="gps-coords">
-                            <button type="button" id="confirm-location-btn" class="confirm-location-btn">
-                                Confirmar Ubicación Marcada
-                            </button>
                         </div>
                         
-                        <!-- Sección de Confirmación y Pago -->
+                        <!-- Resumen y Pago -->
                         <div class="checkout-summary">
                             <div class="summary-total">
                                 <h2 class="total-text">Total a Pagar: <span id="checkout-total">$0.00</span></h2>
@@ -124,8 +104,6 @@
     <script src="main.js"></script>
     <!-- Leaflet JS -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
     <script src="checkout.js"></script>
 </body>
 </html>
-

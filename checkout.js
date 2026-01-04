@@ -4,12 +4,11 @@
  */
 
 // URL de Google Apps Script
-const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwFe4eBWz0TVTb0bT4be2IReWs1_KtdPUkpDYycUL2E_Amj0i803jF1ViaT2yea7KBoTw/exec';
+const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxbpfvzFT4L86ww1dWbovO33cZFVDGk479aPnEQ7tCubo9lANBePKjWslBeVpfVkD71xg/exec';
 
 // Variables globales para el mapa
 let map;
 let marker;
-let locationConfirmed = false;
 
 /**
  * Cargar carrito desde localStorage
@@ -63,49 +62,11 @@ function inicializarMapa() {
   marker.on('dragend', function(e) {
     const latlng = marker.getLatLng();
     document.getElementById('gps-coords').value = `${latlng.lat}, ${latlng.lng}`;
-    locationConfirmed = false;
-    actualizarBotonUbicacion();
   });
   
-  // Agregar control de búsqueda (Geocoder)
-  const geocoder = L.Control.Geocoder.nominatim();
-  L.Control.geocoder({
-    geocoder: geocoder,
-    defaultMarkGeocode: false
-  }).on('markgeocode', function(e) {
-    const latlng = e.geocode.center;
-    map.setView(latlng, 16);
-    marker.setLatLng(latlng);
-    document.getElementById('gps-coords').value = `${latlng.lat}, ${latlng.lng}`;
-    locationConfirmed = false;
-    actualizarBotonUbicacion();
-  }).addTo(map);
-  
-  // Inicializar input oculto
+  // Inicializar input oculto con coordenadas iniciales
   const latlng = marker.getLatLng();
   document.getElementById('gps-coords').value = `${latlng.lat}, ${latlng.lng}`;
-}
-
-/**
- * Actualizar estado del botón de ubicación
- */
-function actualizarBotonUbicacion() {
-  const btn = document.getElementById('confirm-location-btn');
-  if (locationConfirmed) {
-    btn.textContent = 'Ubicación Confirmada ✓';
-    btn.classList.add('confirmed');
-  } else {
-    btn.textContent = 'Confirmar Ubicación Marcada';
-    btn.classList.remove('confirmed');
-  }
-}
-
-/**
- * Confirmar ubicación
- */
-function confirmarUbicacion() {
-  locationConfirmed = true;
-  actualizarBotonUbicacion();
 }
 
 /**
@@ -130,12 +91,6 @@ function inicializarCheckout() {
   // Inicializar mapa
   inicializarMapa();
   
-  // Event listener para botón de confirmar ubicación
-  const confirmLocationBtn = document.getElementById('confirm-location-btn');
-  if (confirmLocationBtn) {
-    confirmLocationBtn.addEventListener('click', confirmarUbicacion);
-  }
-  
   // Event listener para el formulario
   const checkoutForm = document.getElementById('checkout-form');
   if (checkoutForm) {
@@ -158,21 +113,18 @@ async function manejarEnvio(e) {
   
   // Cambiar estado del botón
   const boton = document.getElementById('confirm-order-btn');
-  const textoOriginal = boton.textContent;
   boton.textContent = 'Procesando...';
   boton.disabled = true;
   
   try {
     // Recopilar datos del formulario
-    const datosFormulario = {
-      nombre: document.getElementById('nombre-apellido').value,
-      celular: document.getElementById('celular').value,
-      entrega: document.getElementById('fecha-hora-entrega').value,
-      ciudad: document.getElementById('ciudad').value,
-      direccion: document.getElementById('direccion-referencia').value,
-      gps: document.getElementById('gps-coords').value || '',
-      mensaje: document.getElementById('mensaje-tarjeta').value || ''
-    };
+    const nombre = document.getElementById('nombre').value;
+    const celular = document.getElementById('celular').value;
+    const entrega = document.getElementById('entrega').value;
+    const ciudad = document.getElementById('ciudad').value;
+    const direccion = document.getElementById('direccion').value;
+    const gps = document.getElementById('gps-coords').value || '';
+    const mensaje = document.getElementById('mensaje').value || '';
     
     // Obtener carrito y total
     const carrito = cargarCarrito();
@@ -180,13 +132,13 @@ async function manejarEnvio(e) {
     
     // Preparar datos para enviar con las claves exactas requeridas
     const datosEnvio = {
-      nombre: datosFormulario.nombre,
-      celular: datosFormulario.celular,
-      entrega: datosFormulario.entrega,
-      ciudad: datosFormulario.ciudad,
-      direccion: datosFormulario.direccion,
-      gps: datosFormulario.gps,
-      mensaje: datosFormulario.mensaje,
+      nombre: nombre,
+      celular: celular,
+      entrega: entrega,
+      ciudad: ciudad,
+      direccion: direccion,
+      gps: gps,
+      mensaje: mensaje,
       total: total,
       items: carrito
     };
@@ -202,24 +154,19 @@ async function manejarEnvio(e) {
       body: formData
     });
     
-    // Esperar 2 segundos antes de redirigir
-    setTimeout(() => {
-      const totalNumero = total.toFixed(2);
-      const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
-      window.location.href = urlPayPal;
-    }, 2000);
+    // Redirigir a PayPal después del envío
+    const totalNumero = total.toFixed(2);
+    const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
+    window.location.href = urlPayPal;
     
   } catch (error) {
     console.error('Error al enviar formulario:', error);
-    // Aún así redirigir a PayPal después de 2 segundos
+    // Aún así redirigir a PayPal
     const carrito = cargarCarrito();
     const total = calcularTotal(carrito);
     const totalNumero = total.toFixed(2);
-    
-    setTimeout(() => {
-      const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
-      window.location.href = urlPayPal;
-    }, 2000);
+    const urlPayPal = `https://www.paypal.me/amoremioflorist/${totalNumero}`;
+    window.location.href = urlPayPal;
   }
 }
 

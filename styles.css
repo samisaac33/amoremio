@@ -2185,13 +2185,26 @@ main {
   border: 1px solid rgba(0, 0, 0, 0.1);
 }
 
+.gps-section .form-title {
+  margin-bottom: var(--spacing-sm);
+}
+
+.map-help-text {
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  color: var(--color-text-light);
+  margin-bottom: var(--spacing-md);
+  font-style: italic;
+}
+
 .map-container {
   width: 100%;
-  height: 300px;
+  height: 350px;
   border-radius: 8px;
   overflow: hidden;
   margin-bottom: var(--spacing-md);
   border: 1px solid rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
 .confirm-location-btn {
