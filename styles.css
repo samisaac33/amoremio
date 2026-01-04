@@ -1315,6 +1315,14 @@ main {
   justify-content: center;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.filtros-wrapper::-webkit-scrollbar {
+  display: none;
 }
 
 .filtro-btn {
@@ -1333,6 +1341,7 @@ main {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0.1);
   touch-action: manipulation;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .filtro-btn:hover {
@@ -1682,14 +1691,20 @@ main {
 
   .filtros-container {
     top: 70px;
+    padding: var(--spacing-sm) 0;
   }
 
   .filtros-wrapper {
     justify-content: flex-start;
+    flex-wrap: nowrap;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
-    padding-bottom: var(--spacing-xs);
+    -ms-overflow-style: none;
+    padding: var(--spacing-xs) var(--spacing-sm);
+    gap: var(--spacing-xs);
+    /* Snapping para mejor UX */
+    scroll-snap-type: x mandatory;
   }
 
   .filtros-wrapper::-webkit-scrollbar {
@@ -1699,9 +1714,27 @@ main {
   .filtro-btn {
     white-space: nowrap;
     flex-shrink: 0;
-    font-size: 0.95rem;
-    padding: 0.75rem 1.25rem;
-    min-height: 44px;
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    min-height: 40px;
+    max-height: 40px;
+    border-radius: 20px;
+    /* Snapping */
+    scroll-snap-align: start;
+    /* Ajuste de texto para nombres largos */
+    line-height: 1.2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Texto más compacto para nombres largos en móviles */
+  .filtro-btn[data-filter="Arreglos Especiales"],
+  .filtro-btn[data-filter="Arreglos en Floreros"],
+  .filtro-btn[data-filter="Arreglos Fúnebres"] {
+    font-size: 0.8rem;
+    padding: 0.55rem 0.9rem;
+    letter-spacing: -0.2px;
   }
 
   .product-footer {
@@ -1886,6 +1919,31 @@ main {
   /* Prevenir zoom en inputs (iOS Safari) */
   input, select, textarea {
     font-size: 16px !important;
+  }
+  
+  /* Filtros aún más compactos en pantallas muy pequeñas */
+  .filtros-container {
+    padding: var(--spacing-xs) 0;
+  }
+  
+  .filtros-wrapper {
+    padding: var(--spacing-xs) var(--spacing-xs);
+    gap: 0.5rem;
+  }
+  
+  .filtro-btn {
+    font-size: 0.78rem;
+    padding: 0.5rem 0.85rem;
+    min-height: 38px;
+    max-height: 38px;
+    border-radius: 19px;
+  }
+  
+  .filtro-btn[data-filter="Arreglos Especiales"],
+  .filtro-btn[data-filter="Arreglos en Floreros"],
+  .filtro-btn[data-filter="Arreglos Fúnebres"] {
+    font-size: 0.75rem;
+    padding: 0.5rem 0.8rem;
   }
 }
 
