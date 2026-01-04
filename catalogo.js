@@ -32,14 +32,31 @@ async function cargarProductos() {
 
     // --- CLASIFICACIÓN AUTOMÁTICA POR PREFIJO ---
     productos.forEach(p => {
-        const id = (p.id || p.ID || '').toString().toUpperCase();
+        // Buscar el ID en diferentes posibles propiedades (id, ID, Id, codigo, Codigo, etc.)
+        const id = String(p.id || p.ID || p.Id || p.codigo || p.Codigo || p.CODIGO || '').trim().toUpperCase();
+        
         // Verificar 'AF' primero porque es prefijo de dos letras
-        if (id.startsWith('AF')) p.categoria = 'Arreglos Fúnebres';
-        else if (id.startsWith('B')) p.categoria = 'Ramos';
-        else if (id.startsWith('S')) p.categoria = 'Arreglos Especiales';
-        else if (id.startsWith('J')) p.categoria = 'Arreglos en Floreros';
+        if (id.startsWith('AF')) {
+            p.categoria = 'Arreglos Fúnebres';
+        } else if (id.startsWith('B')) {
+            p.categoria = 'Ramos';
+        } else if (id.startsWith('S')) {
+            p.categoria = 'Arreglos Especiales';
+        } else if (id.startsWith('J')) {
+            p.categoria = 'Arreglos en Floreros';
+        }
+        // Si no coincide con ningún prefijo, no se asigna categoría (para Complementos)
         // Complementos por ahora vacío
     });
+
+    // Debug: mostrar estadísticas de categorización
+    console.log('Productos cargados:', productos.length);
+    const categorias = {};
+    productos.forEach(p => {
+        const cat = p.categoria || 'Sin categoría';
+        categorias[cat] = (categorias[cat] || 0) + 1;
+    });
+    console.log('Distribución por categorías:', categorias);
 
     if (productos.length === 0) {
       galeria.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles en este momento.</p>';
@@ -191,9 +208,14 @@ function filtrarPorCategoria(categoria) {
   // Filtrar productos
   let productosFiltrados = productos;
   if (categoria !== 'Todos') {
-    productosFiltrados = productos.filter(producto => 
-      (producto.categoria || '').toLowerCase() === categoria.toLowerCase()
-    );
+    productosFiltrados = productos.filter(producto => {
+      const categoriaProducto = (producto.categoria || '').toLowerCase().trim();
+      const categoriaFiltro = categoria.toLowerCase().trim();
+      return categoriaProducto === categoriaFiltro;
+    });
+    
+    // Debug: verificar filtrado
+    console.log(`Filtro aplicado: "${categoria}" - Productos encontrados: ${productosFiltrados.length}`);
   }
 
   // Renderizar productos filtrados (pasar array completo para mantener índices)
