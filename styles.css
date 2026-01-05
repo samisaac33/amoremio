@@ -742,9 +742,19 @@ main {
     right: -6px;
   }
 
+  /* Footer Compacto Móvil */
+  .footer {
+    padding: 20px 0;
+  }
+
+  .footer-container {
+    padding: 0 var(--spacing-sm);
+  }
+
   .footer-content {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
+    gap: 20px;
+    margin-bottom: 20px;
   }
 
   .footer-section {
@@ -752,12 +762,59 @@ main {
     text-align: center;
   }
 
+  .footer-brand {
+    gap: 8px;
+  }
+
+  .footer-brand-block {
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+
+  .footer-logo-img {
+    height: 35px;
+  }
+
+  .footer-logo {
+    font-size: 1.4rem;
+  }
+
+  .footer-tagline {
+    font-size: 0.8rem;
+  }
+
+  .footer-title {
+    font-size: 0.85rem;
+    margin-bottom: 12px;
+  }
+
   .footer-social-links {
     justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: 0;
+  }
+
+  .footer-social-link {
+    font-size: 1.2rem;
   }
 
   .footer-payment-methods {
     justify-content: center;
+    gap: var(--spacing-sm);
+    margin-top: 0;
+  }
+
+  .footer-payment-link {
+    font-size: 1.3rem;
+  }
+
+  .footer-payment-icon {
+    font-size: 1.3rem;
+  }
+
+  .footer-bottom {
+    padding-top: 12px;
+    font-size: 0.75rem;
   }
 }
 
