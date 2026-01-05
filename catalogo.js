@@ -132,15 +132,8 @@ function renderizarProductos(productosFiltrados) {
     return crearTarjetaProducto(producto, indiceReal);
   }).join('');
   
-  // Agregar event listeners a los botones de compra
-  document.querySelectorAll('.product-btn:not(.disabled)').forEach(btn => {
-    btn.addEventListener('click', function() {
-      const card = this.closest('.product-card');
-      const productoIndex = parseInt(card.dataset.productoIndex);
-      const producto = productosFiltradosActuales[productoIndex];
-      agregarAlCarrito(producto);
-    });
-  });
+  // Agregar event listeners a los botones de compra (los enlaces ya están en el HTML)
+  // Los botones de compra tienen onclick inline para prevenir la navegación
 
   // Renderizar controles de paginación solo para "Todos"
   if (categoriaFiltro === 'Todos' && productosFiltrados.length > PRODUCTOS_POR_PAGINA) {
@@ -318,33 +311,41 @@ function crearTarjetaProducto(producto, index) {
   const tieneEtiqueta = producto.Etiqueta && producto.Etiqueta.trim() !== '';
   const claseAgotado = !disponible ? 'agotado' : '';
   const precio = formatearPrecio(producto.Precio);
+  
+  // Obtener ID del producto para el enlace
+  const idRaw = producto.id || producto.ID || producto.Id || producto.codigo || producto.Codigo || producto.CODIGO || producto['Código'] || '';
+  const productoId = encodeURIComponent(String(idRaw).trim().toUpperCase());
+  const productUrl = `product.html?id=${productoId}`;
 
   return `
     <div class="product-card ${claseAgotado}" data-categoria="${producto.categoria || ''}" data-producto-index="${index}">
-      <div class="product-image-container">
-          <img 
-            src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
-            alt="${producto.Nombre || 'Producto'}"
-            class="product-image"
-            loading="lazy"
-            decoding="async"
-          >
-        ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
-      </div>
-      <div class="product-info">
-        <h3 class="product-name">${producto.Nombre || 'Sin nombre'}</h3>
-        <div class="product-footer">
-          <span class="product-price">${precio}</span>
-          <button 
-            class="product-btn ${!disponible ? 'disabled' : ''}"
-            ${!disponible ? 'disabled' : ''}
-            ${!disponible ? 'aria-disabled="true"' : ''}
-            aria-label="${disponible ? `Comprar ${producto.Nombre || 'producto'}` : 'Producto agotado'}"
-          >
-            ${disponible ? 'Comprar' : 'Agotado'}
-          </button>
+      <a href="${productUrl}" class="product-card-link" aria-label="Ver detalles de ${producto.Nombre || 'producto'}">
+        <div class="product-image-container">
+            <img 
+              src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
+              alt="${producto.Nombre || 'Producto'}"
+              class="product-image"
+              loading="lazy"
+              decoding="async"
+            >
+          ${tieneEtiqueta ? `<span class="product-badge">${producto.Etiqueta}</span>` : ''}
         </div>
-      </div>
+        <div class="product-info">
+          <h3 class="product-name">${producto.Nombre || 'Sin nombre'}</h3>
+          <div class="product-footer">
+            <span class="product-price">${precio}</span>
+            <button 
+              class="product-btn ${!disponible ? 'disabled' : ''}"
+              ${!disponible ? 'disabled' : ''}
+              ${!disponible ? 'aria-disabled="true"' : ''}
+              aria-label="${disponible ? `Comprar ${producto.Nombre || 'producto'}` : 'Producto agotado'}"
+              onclick="event.preventDefault(); ${disponible ? `agregarAlCarrito(productosFiltradosActuales[${index}]);` : ''}"
+            >
+              ${disponible ? 'Comprar' : 'Agotado'}
+            </button>
+          </div>
+        </div>
+      </a>
     </div>
   `;
 }
