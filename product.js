@@ -8,7 +8,6 @@ const URL_API = 'https://script.google.com/macros/s/AKfycbyfqYVWemnAfC2vbduT0x-V
 
 // Variables globales
 let productoActual = null;
-let cantidadActual = 1;
 
 /**
  * Obtener ID del producto desde la URL
@@ -352,48 +351,6 @@ function mostrarError() {
 }
 
 /**
- * Aumentar cantidad
- */
-function aumentarCantidad() {
-  if (cantidadActual < 99) {
-    cantidadActual++;
-    const quantityInput = document.getElementById('productQuantity');
-    if (quantityInput) {
-      quantityInput.value = cantidadActual;
-    }
-  }
-}
-
-/**
- * Disminuir cantidad
- */
-function disminuirCantidad() {
-  if (cantidadActual > 1) {
-    cantidadActual--;
-    const quantityInput = document.getElementById('productQuantity');
-    if (quantityInput) {
-      quantityInput.value = cantidadActual;
-    }
-  }
-}
-
-/**
- * Actualizar cantidad desde input
- */
-function actualizarCantidad() {
-  const input = document.getElementById('productQuantity');
-  if (!input) return;
-  
-  let value = parseInt(input.value) || 1;
-  
-  if (value < 1) value = 1;
-  if (value > 99) value = 99;
-  
-  cantidadActual = value;
-  input.value = cantidadActual;
-}
-
-/**
  * Comprar producto (WhatsApp)
  */
 function comprarProducto() {
@@ -403,12 +360,10 @@ function comprarProducto() {
   const nombre = productoActual.Nombre || 'Producto';
   const precio = formatearPrecio(productoActual.Precio);
   
-  // Crear mensaje para WhatsApp
+  // Crear mensaje para WhatsApp (solo precio unitario)
   const mensaje = `Hola, me interesa comprar:\n\n` +
     `*${nombre}*\n` +
-    `Cantidad: ${cantidadActual}\n` +
-    `Precio unitario: ${precio}\n` +
-    `Total: ${formatearPrecio((parseFloat(productoActual.Precio) || 0) * cantidadActual)}\n\n` +
+    `Precio: ${precio}\n\n` +
     `ID del producto: ${productoId}`;
   
   const whatsappURL = `https://wa.me/593986681447?text=${encodeURIComponent(mensaje)}`;
@@ -425,23 +380,7 @@ function inicializarEventos() {
   // Evitar inicializar eventos múltiples veces
   if (eventosInicializados) return;
   
-  const increaseBtn = document.getElementById('increaseQuantity');
-  const decreaseBtn = document.getElementById('decreaseQuantity');
-  const quantityInput = document.getElementById('productQuantity');
   const buyButton = document.getElementById('buyNowButton');
-  
-  if (increaseBtn) {
-    increaseBtn.addEventListener('click', aumentarCantidad);
-  }
-  
-  if (decreaseBtn) {
-    decreaseBtn.addEventListener('click', disminuirCantidad);
-  }
-  
-  if (quantityInput) {
-    quantityInput.addEventListener('change', actualizarCantidad);
-    quantityInput.addEventListener('blur', actualizarCantidad);
-  }
   
   if (buyButton) {
     buyButton.addEventListener('click', comprarProducto);
