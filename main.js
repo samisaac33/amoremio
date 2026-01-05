@@ -25,13 +25,13 @@ function generateNavbar() {
   const carritoCount = getCarritoCount();
   
   const menuItems = [
-    { text: 'Cumpleaños', categoria: 'Todos' },
-    { text: 'Aniversario', categoria: 'Todos' },
-    { text: 'Condolencias', categoria: 'Arreglos Fúnebres' }
+    { text: 'Cumpleaños', categoria: 'todos' },
+    { text: 'Aniversario', categoria: 'todos' },
+    { text: 'Condolencias', categoria: 'arreglos-funebres' }
   ];
 
   const navLinksHTML = menuItems.map(item => 
-    `<a href="catalogo.html?categoria=${encodeURIComponent(item.categoria)}" class="nav-link">${item.text}</a>`
+    `<a href="catalogo.html?categoria=${item.categoria}" class="nav-link">${item.text}</a>`
   ).join('');
 
   return `

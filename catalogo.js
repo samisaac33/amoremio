@@ -13,6 +13,69 @@ let paginaActual = 1;
 const PRODUCTOS_POR_PAGINA = 24; // 4 columnas × 6 filas
 
 /**
+ * Mapea parámetros URL a nombres de categoría
+ * @param {string} urlParam - Parámetro de URL (ej: 'todos', 'arreglos-funebres')
+ * @returns {string} Nombre de categoría para filtrado
+ */
+function mapearParametroACategoria(urlParam) {
+  if (!urlParam) return 'Todos';
+  
+  const paramLower = urlParam.toLowerCase().trim();
+  
+  // Mapeo de parámetros URL a nombres de categoría
+  const mapeo = {
+    'todos': 'Todos',
+    'arreglos-funebres': 'Arreglos Fúnebres',
+    'arreglos fúnebres': 'Arreglos Fúnebres',
+    'ramos': 'Ramos',
+    'arreglos-especiales': 'Arreglos Especiales',
+    'arreglos especiales': 'Arreglos Especiales',
+    'arreglos-en-floreros': 'Arreglos en Floreros',
+    'arreglos en floreros': 'Arreglos en Floreros',
+    'complementos': 'Complementos'
+  };
+  
+  return mapeo[paramLower] || 'Todos';
+}
+
+/**
+ * Obtiene el parámetro categoria de la URL
+ * @returns {string|null} Valor del parámetro categoria o null
+ */
+function obtenerCategoriaDesdeURL() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('categoria');
+}
+
+/**
+ * Aplica el filtro basado en el parámetro URL
+ * Esta función se ejecuta después de cargar los productos
+ */
+function aplicarFiltroDesdeURL() {
+  const categoriaParam = obtenerCategoriaDesdeURL();
+  
+  if (categoriaParam) {
+    const categoriaMapeada = mapearParametroACategoria(categoriaParam);
+    // Aplicar filtro directamente usando la función existente
+    filtrarPorCategoria(categoriaMapeada);
+  } else {
+    // Si no hay parámetro, usar Todos por defecto
+    categoriaFiltro = 'Todos';
+    
+    // Asegurar que el botón "Todos" esté activo
+    document.querySelectorAll('.filtro-btn').forEach(btn => {
+      btn.classList.remove('active');
+      if (btn.dataset.filter === 'Todos') {
+        btn.classList.add('active');
+      }
+    });
+    
+    // Renderizar productos (todos inicialmente)
+    renderizarProductos(productos);
+  }
+}
+
+/**
  * Cargar productos desde la API
  */
 async function cargarProductos() {
@@ -65,19 +128,8 @@ async function cargarProductos() {
       console.warn('No se pudo guardar productos en localStorage:', error);
     }
 
-    // Inicializar filtro a "Todos" al cargar y asegurar que el botón esté activo
-    categoriaFiltro = 'Todos';
-    
-    // Asegurar que el botón "Todos" esté activo
-    document.querySelectorAll('.filtro-btn').forEach(btn => {
-      btn.classList.remove('active');
-      if (btn.dataset.filter === 'Todos') {
-        btn.classList.add('active');
-      }
-    });
-    
-    // Renderizar productos (todos inicialmente)
-    renderizarProductos(productos);
+    // Aplicar filtro desde URL si existe, sino usar "Todos" por defecto
+    aplicarFiltroDesdeURL();
     loader.style.display = 'none';
 
   } catch (error) {
