@@ -10,7 +10,8 @@
 function getCarritoCount() {
   try {
     const carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
-    return carrito.length;
+    // Sumar todas las cantidades en lugar de solo contar items
+    return carrito.reduce((total, producto) => total + (producto.cantidad || 1), 0);
   } catch {
     return 0;
   }
@@ -336,6 +337,10 @@ function crearTarjetaProductoHTML(producto, index) {
 function agregarAlCarritoGlobal(producto) {
   try {
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    // Inicializar cantidad si no existe
+    if (!producto.cantidad) {
+      producto.cantidad = 1;
+    }
     carrito.push(producto);
     localStorage.setItem('carrito', JSON.stringify(carrito));
     

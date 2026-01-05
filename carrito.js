@@ -25,6 +25,43 @@ function cargarCarrito() {
 }
 
 /**
+ * Actualizar cantidad de un producto en el carrito
+ */
+function actualizarCantidad(index, nuevaCantidad) {
+  let carrito = cargarCarrito();
+  if (nuevaCantidad <= 0) {
+    eliminarDelCarrito(index);
+    return;
+  }
+  carrito[index].cantidad = nuevaCantidad;
+  localStorage.setItem('carrito', JSON.stringify(carrito));
+  renderizarCarrito();
+  
+  // Actualizar contador en header
+  if (typeof updateCarritoCount === 'function') {
+    updateCarritoCount();
+  }
+}
+
+/**
+ * Aumentar cantidad
+ */
+function aumentarCantidad(index) {
+  let carrito = cargarCarrito();
+  const cantidadActual = carrito[index].cantidad || 1;
+  actualizarCantidad(index, cantidadActual + 1);
+}
+
+/**
+ * Disminuir cantidad
+ */
+function disminuirCantidad(index) {
+  let carrito = cargarCarrito();
+  const cantidadActual = carrito[index].cantidad || 1;
+  actualizarCantidad(index, cantidadActual - 1);
+}
+
+/**
  * Eliminar producto del carrito
  */
 function eliminarDelCarrito(index) {
@@ -45,8 +82,18 @@ function eliminarDelCarrito(index) {
 function calcularTotal(carrito) {
   return carrito.reduce((total, producto) => {
     const precio = typeof producto.Precio === 'string' ? parseFloat(producto.Precio) : producto.Precio;
-    return total + (isNaN(precio) ? 0 : precio);
+    const cantidad = producto.cantidad || 1;
+    return total + (isNaN(precio) ? 0 : precio * cantidad);
   }, 0);
+}
+
+/**
+ * Calcular subtotal de un producto
+ */
+function calcularSubtotal(producto) {
+  const precio = typeof producto.Precio === 'string' ? parseFloat(producto.Precio) : producto.Precio;
+  const cantidad = producto.cantidad || 1;
+  return isNaN(precio) ? 0 : precio * cantidad;
 }
 
 /**
@@ -70,42 +117,53 @@ function renderizarCarrito() {
   
   let html = `
     <div class="carrito-items">
-      <table class="carrito-table">
-        <thead>
-          <tr>
-            <th>Imagen</th>
-            <th>Producto</th>
-            <th>Precio</th>
-            <th>Acción</th>
-          </tr>
-        </thead>
-        <tbody>
   `;
   
   carrito.forEach((producto, index) => {
-    const precio = formatearPrecio(producto.Precio);
+    const precioUnitario = formatearPrecio(producto.Precio);
+    const cantidad = producto.cantidad || 1;
+    const subtotal = calcularSubtotal(producto);
+    const precioSubtotal = formatearPrecio(subtotal);
+    
     html += `
-      <tr>
-        <td class="carrito-imagen">
-          <img src="${producto.Imagen || 'https://via.placeholder.com/100x100'}" alt="${producto.Nombre}">
-        </td>
-        <td class="carrito-nombre">
-          <h3>${producto.Nombre || 'Sin nombre'}</h3>
-        </td>
-        <td class="carrito-precio">${precio}</td>
-        <td class="carrito-accion">
-          <button class="btn-eliminar" onclick="eliminarDelCarrito(${index})">
-            <i class="fas fa-trash"></i>
-          </button>
-        </td>
-      </tr>
+      <div class="cart-item" data-index="${index}">
+        <!-- Columna Izquierda: Imagen -->
+        <div class="item-image">
+          <img src="${producto.Imagen || 'https://via.placeholder.com/80x80'}" alt="${producto.Nombre || 'Producto'}" loading="lazy">
+        </div>
+        
+        <!-- Columna Derecha: Información -->
+        <div class="item-details">
+          <!-- Fila Superior: Nombre -->
+          <div class="item-name">${producto.Nombre || 'Sin nombre'}</div>
+          
+          <!-- Fila Inferior: Acciones -->
+          <div class="item-actions">
+            <span class="item-price-unit">${precioUnitario}</span>
+            
+            <div class="item-quantity">
+              <button class="quantity-btn minus" onclick="disminuirCantidad(${index})" aria-label="Disminuir cantidad">−</button>
+              <input type="number" 
+                     class="quantity-input" 
+                     value="${cantidad}" 
+                     min="1" 
+                     onchange="actualizarCantidad(${index}, parseInt(this.value))"
+                     aria-label="Cantidad">
+              <button class="quantity-btn plus" onclick="aumentarCantidad(${index})" aria-label="Aumentar cantidad">+</button>
+            </div>
+            
+            <span class="item-price-total">${precioSubtotal}</span>
+            
+            <button class="item-delete" onclick="eliminarDelCarrito(${index})" aria-label="Eliminar producto">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      </div>
     `;
   });
   
   html += `
-        </tbody>
-      </table>
-      
       <div class="carrito-total">
         <div class="total-info">
           <h2>Total: <span>${formatearPrecio(total)}</span></h2>
@@ -146,7 +204,8 @@ function finalizarCompraWhatsApp() {
   
   const productosLista = carrito.map((producto, index) => {
     const precio = formatearPrecio(producto.Precio);
-    return `${index + 1}x ${producto.Nombre} (${precio})`;
+    const cantidad = producto.cantidad || 1;
+    return `${cantidad}x ${producto.Nombre} (${precio} c/u)`;
   }).join(', ');
   
   const total = calcularTotal(carrito);

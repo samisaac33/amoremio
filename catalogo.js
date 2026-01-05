@@ -288,6 +288,10 @@ function cambiarPagina(nuevaPagina) {
 function agregarAlCarrito(producto) {
   try {
     let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    // Inicializar cantidad si no existe
+    if (!producto.cantidad) {
+      producto.cantidad = 1;
+    }
     carrito.push(producto);
     localStorage.setItem('carrito', JSON.stringify(carrito));
     
