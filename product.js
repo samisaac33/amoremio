@@ -462,7 +462,81 @@ function inicializarEventos() {
     buyButton.addEventListener('click', comprarProducto);
   }
   
+  // Inicializar posición del botón fijo en móvil
+  inicializarBotonFijoMovil();
+  
   eventosInicializados = true;
+}
+
+/**
+ * Inicializar comportamiento del botón fijo en móvil
+ * El botón se mantiene fijo en bottom: 0, pero cuando el footer aparece,
+ * se ajusta para posicionarse justo encima del footer
+ */
+function inicializarBotonFijoMovil() {
+  // Solo aplicar en móvil
+  if (window.innerWidth > 768) return;
+  
+  const actionsWrapper = document.querySelector('.product-actions-wrapper');
+  if (!actionsWrapper) return;
+  
+  const footer = document.querySelector('.footer');
+  if (!footer) return;
+  
+  function ajustarPosicionBoton() {
+    // Solo aplicar en móvil
+    if (window.innerWidth > 768) {
+      actionsWrapper.style.bottom = '';
+      return;
+    }
+    
+    const windowHeight = window.innerHeight;
+    
+    // Obtener posición del footer relativa al viewport
+    const footerRect = footer.getBoundingClientRect();
+    const footerTop = footerRect.top; // Distancia desde el top del viewport
+    
+    // Altura del botón
+    const buttonHeight = actionsWrapper.offsetHeight || 80;
+    
+    // Si el footer está visible en la ventana (su parte superior está dentro del viewport)
+    // y está cerca del bottom (menos de la altura del botón + un margen)
+    if (footerTop < windowHeight && footerTop > 0) {
+      // Calcular la distancia desde el bottom de la ventana hasta la parte superior del footer
+      const distanciaDesdeBottom = windowHeight - footerTop;
+      
+      // Si hay espacio suficiente para el botón, posicionarlo justo encima del footer
+      if (distanciaDesdeBottom >= buttonHeight) {
+        actionsWrapper.style.bottom = `${distanciaDesdeBottom}px`;
+      } else {
+        // Si no hay espacio suficiente, mantener el botón en bottom: 0
+        actionsWrapper.style.bottom = '0';
+      }
+    } else {
+      // El footer no está visible o está más arriba, el botón se mantiene en bottom: 0
+      actionsWrapper.style.bottom = '0';
+    }
+  }
+  
+  // Ajustar posición al cargar
+  setTimeout(ajustarPosicionBoton, 100);
+  
+  // Ajustar posición al hacer scroll
+  let ticking = false;
+  window.addEventListener('scroll', function() {
+    if (!ticking) {
+      window.requestAnimationFrame(function() {
+        ajustarPosicionBoton();
+        ticking = false;
+      });
+      ticking = true;
+    }
+  });
+  
+  // Ajustar posición al redimensionar la ventana
+  window.addEventListener('resize', function() {
+    ajustarPosicionBoton();
+  });
 }
 
 /**

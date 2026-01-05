@@ -2224,6 +2224,19 @@ main {
     font-size: 1.25rem;
   }
 
+  /* Botón de compra fijo en móvil - siempre visible */
+  .product-actions-wrapper {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    background-color: var(--color-white);
+    padding: 12px 16px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    z-index: 9999;
+    margin-top: 0;
+  }
 
   .product-buy-btn {
     width: 100%;
@@ -2233,6 +2246,10 @@ main {
     border-radius: 8px;
   }
 
+  /* Añadir padding inferior al body para crear espacio y que el footer sea visible */
+  body:has(.product-detail-section) {
+    padding-bottom: 80px;
+  }
 
   /* Añadir padding inferior al contenedor de información para que no quede oculto detrás del botón fijo */
   .product-detail-info-col {
