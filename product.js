@@ -193,58 +193,81 @@ async function cargarProducto() {
  * Mostrar producto en la página
  */
 function mostrarProducto(producto) {
+  if (!producto) {
+    console.error('mostrarProducto: producto es null o undefined');
+    return;
+  }
+
   // Imagen
   const productImage = document.getElementById('productDetailImage');
-  const productBadge = document.getElementById('productBadge');
-  productImage.src = producto.Imagen || 'https://via.placeholder.com/600x600?text=Imagen+No+Disponible';
-  productImage.alt = producto.Nombre || 'Producto';
-  
-  // Badge
-  if (producto.Etiqueta && producto.Etiqueta.trim() !== '') {
-    productBadge.textContent = producto.Etiqueta;
-    productBadge.style.display = 'block';
+  if (productImage) {
+    productImage.src = producto.Imagen || 'https://via.placeholder.com/600x600?text=Imagen+No+Disponible';
+    productImage.alt = producto.Nombre || 'Producto';
   } else {
-    productBadge.style.display = 'none';
+    console.error('No se encontró el elemento productDetailImage');
   }
 
   // Nombre
-  document.getElementById('productDetailName').textContent = producto.Nombre || 'Sin nombre';
+  const productName = document.getElementById('productDetailName');
+  if (productName) {
+    productName.textContent = producto.Nombre || 'Sin nombre';
+  } else {
+    console.error('No se encontró el elemento productDetailName');
+  }
 
   // Precio
   const precio = formatearPrecio(producto.Precio);
-  document.getElementById('productDetailPrice').textContent = precio;
+  const productPrice = document.getElementById('productDetailPrice');
+  if (productPrice) {
+    productPrice.textContent = precio;
+  } else {
+    console.error('No se encontró el elemento productDetailPrice');
+  }
 
   // Descripción completa
-  document.getElementById('productFullDescription').textContent = producto.fullDescription || 'Descripción no disponible.';
+  const productDescription = document.getElementById('productFullDescription');
+  if (productDescription) {
+    productDescription.textContent = producto.fullDescription || 'Descripción no disponible.';
+  } else {
+    console.error('No se encontró el elemento productFullDescription');
+  }
 
   // Includes (lista de componentes)
   const includesList = document.getElementById('productIncludes');
-  includesList.innerHTML = '';
-  if (producto.includes && Array.isArray(producto.includes) && producto.includes.length > 0) {
-    producto.includes.forEach(item => {
+  if (includesList) {
+    includesList.innerHTML = '';
+    if (producto.includes && Array.isArray(producto.includes) && producto.includes.length > 0) {
+      producto.includes.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        includesList.appendChild(li);
+      });
+    } else {
       const li = document.createElement('li');
-      li.textContent = item;
+      li.textContent = 'Información no disponible';
       includesList.appendChild(li);
-    });
+    }
   } else {
-    const li = document.createElement('li');
-    li.textContent = 'Información no disponible';
-    includesList.appendChild(li);
+    console.error('No se encontró el elemento productIncludes');
   }
 
   // Ideal For (ocasiones)
   const idealForList = document.getElementById('productIdealFor');
-  idealForList.innerHTML = '';
-  if (producto.idealFor && Array.isArray(producto.idealFor) && producto.idealFor.length > 0) {
-    producto.idealFor.forEach(item => {
+  if (idealForList) {
+    idealForList.innerHTML = '';
+    if (producto.idealFor && Array.isArray(producto.idealFor) && producto.idealFor.length > 0) {
+      producto.idealFor.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        idealForList.appendChild(li);
+      });
+    } else {
       const li = document.createElement('li');
-      li.textContent = item;
+      li.textContent = 'Ocasiones especiales';
       idealForList.appendChild(li);
-    });
+    }
   } else {
-    const li = document.createElement('li');
-    li.textContent = 'Ocasiones especiales';
-    idealForList.appendChild(li);
+    console.error('No se encontró el elemento productIdealFor');
   }
 
   // Por qué elegir
@@ -270,26 +293,45 @@ function mostrarProducto(producto) {
         whyChooseList.appendChild(li);
       });
     }
+  } else {
+    console.error('No se encontró el elemento productWhyChoose');
   }
 
   // Simbolismo
-  document.getElementById('productSymbolism').textContent = producto.symbolism || 'Las flores son un lenguaje universal del corazón.';
+  const productSymbolism = document.getElementById('productSymbolism');
+  if (productSymbolism) {
+    productSymbolism.textContent = producto.symbolism || 'Las flores son un lenguaje universal del corazón.';
+  } else {
+    console.error('No se encontró el elemento productSymbolism');
+  }
 
   // Disponibilidad
   const disponible = producto.Disponible !== false;
   const availabilityMessage = document.getElementById('productAvailability');
   const buyButton = document.getElementById('buyNowButton');
   
-  if (!disponible) {
-    availabilityMessage.textContent = 'Este producto no está disponible en este momento.';
-    availabilityMessage.style.display = 'block';
-    availabilityMessage.className = 'product-availability-message unavailable';
-    buyButton.disabled = true;
-    buyButton.classList.add('disabled');
+  if (availabilityMessage) {
+    if (!disponible) {
+      availabilityMessage.textContent = 'Este producto no está disponible en este momento.';
+      availabilityMessage.style.display = 'block';
+      availabilityMessage.className = 'product-availability-message unavailable';
+    } else {
+      availabilityMessage.style.display = 'none';
+    }
   } else {
-    availabilityMessage.style.display = 'none';
-    buyButton.disabled = false;
-    buyButton.classList.remove('disabled');
+    console.error('No se encontró el elemento productAvailability');
+  }
+  
+  if (buyButton) {
+    if (!disponible) {
+      buyButton.disabled = true;
+      buyButton.classList.add('disabled');
+    } else {
+      buyButton.disabled = false;
+      buyButton.classList.remove('disabled');
+    }
+  } else {
+    console.error('No se encontró el elemento buyNowButton');
   }
 
   // Actualizar título de la página
@@ -315,7 +357,10 @@ function mostrarError() {
 function aumentarCantidad() {
   if (cantidadActual < 99) {
     cantidadActual++;
-    document.getElementById('productQuantity').value = cantidadActual;
+    const quantityInput = document.getElementById('productQuantity');
+    if (quantityInput) {
+      quantityInput.value = cantidadActual;
+    }
   }
 }
 
@@ -325,7 +370,10 @@ function aumentarCantidad() {
 function disminuirCantidad() {
   if (cantidadActual > 1) {
     cantidadActual--;
-    document.getElementById('productQuantity').value = cantidadActual;
+    const quantityInput = document.getElementById('productQuantity');
+    if (quantityInput) {
+      quantityInput.value = cantidadActual;
+    }
   }
 }
 
@@ -334,6 +382,8 @@ function disminuirCantidad() {
  */
 function actualizarCantidad() {
   const input = document.getElementById('productQuantity');
+  if (!input) return;
+  
   let value = parseInt(input.value) || 1;
   
   if (value < 1) value = 1;
