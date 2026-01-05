@@ -1,12 +1,24 @@
 /**
  * Hero Slider - Carrusel de imágenes automático con navegación manual
+ * Simplificado: Solo títulos, sin descripciones
  */
 document.addEventListener('DOMContentLoaded', function() {
   const slides = document.querySelectorAll('.hero-slide');
+  const heroTitle = document.querySelector('.hero-title');
   let currentSlide = 0;
   let autoSlideInterval = null;
 
   if (slides.length === 0) return;
+
+  // Títulos para las 6 diapositivas
+  const titles = [
+    'Dilo con Flores',
+    'Momentos Inolvidables',
+    'Amor en cada Detalle',
+    'Sorprende Hoy',
+    'Frescura Garantizada',
+    'Amore Mío'
+  ];
 
   function showSlide(index) {
     slides[currentSlide].classList.remove('active');
@@ -14,6 +26,11 @@ document.addEventListener('DOMContentLoaded', function() {
     if (currentSlide < 0) currentSlide = slides.length - 1;
     if (currentSlide >= slides.length) currentSlide = 0;
     slides[currentSlide].classList.add('active');
+    
+    // Actualizar título
+    if (heroTitle && titles[currentSlide]) {
+      heroTitle.textContent = titles[currentSlide];
+    }
   }
 
   function nextSlide() {
@@ -31,6 +48,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
     // Iniciar nuevo intervalo
     autoSlideInterval = setInterval(nextSlide, 3000);
+  }
+
+  // Inicializar con el primer título
+  if (heroTitle && titles[0]) {
+    heroTitle.textContent = titles[0];
   }
 
   // Iniciar auto slide
