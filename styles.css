@@ -1019,16 +1019,27 @@ main {
   padding: 0 var(--spacing-md);
 }
 
-.collection-filters li a {
+.collection-filters li a,
+.collection-filters li button {
   font-family: var(--font-body);
   font-size: 0.95rem;
   color: var(--color-text-light);
   text-decoration: none;
   transition: color var(--transition-fast);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
-.collection-filters li a:hover {
+.collection-filters li a:hover,
+.collection-filters li button:hover {
   color: var(--color-text);
+}
+
+.collection-filters li button.active {
+  color: var(--color-text);
+  font-weight: 600;
 }
 
 .featured-carousel-wrapper {
