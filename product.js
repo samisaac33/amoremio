@@ -42,35 +42,64 @@ function obtenerIdProducto(producto) {
 }
 
 /**
+ * Cargar productos desde la API
+ * @returns {Promise<Array>} Array de productos
+ */
+async function fetchProductsFromSheet() {
+  const response = await fetch(URL_API);
+  
+  if (!response.ok) {
+    throw new Error(`Error HTTP: ${response.status}`);
+  }
+
+  const data = await response.json();
+  const productos = Array.isArray(data) ? data : [];
+  
+  return productos;
+}
+
+/**
  * Cargar producto desde la API
  */
 async function cargarProducto() {
   const loader = document.getElementById('loader');
   const productSection = document.getElementById('productDetailSection');
   const errorSection = document.getElementById('productErrorSection');
+  
+  // Paso 1: Obtener ID de la URL
   const productId = obtenerIdProductoDesdeURL();
 
   if (!productId) {
+    console.log('No se encontró ID en la URL');
     mostrarError();
     return;
   }
 
-  try {
-    loader.style.display = 'flex';
-    productSection.style.display = 'none';
-    errorSection.style.display = 'none';
+  console.log('ID buscado:', productId);
 
-    const response = await fetch(URL_API);
+  try {
+    // Mostrar loader
+    if (loader) loader.style.display = 'flex';
+    if (productSection) productSection.style.display = 'none';
+    if (errorSection) errorSection.style.display = 'none';
+
+    // Paso 2: Cargar productos desde la API (esperar a que termine)
+    const productos = await fetchProductsFromSheet();
     
-    if (!response.ok) {
-      throw new Error(`Error HTTP: ${response.status}`);
+    console.log('Productos disponibles:', productos.length);
+    
+    if (productos.length === 0) {
+      console.log('No se encontraron productos en la API');
+      mostrarError();
+      return;
     }
 
-    const data = await response.json();
-    const productos = Array.isArray(data) ? data : [];
-    
+    // Paso 3: Buscar el producto después de que los datos estén disponibles
     // Normalizar el ID de búsqueda
     const productIdNormalized = productId.trim().toUpperCase();
+    
+    console.log('Buscando producto con ID normalizado:', productIdNormalized);
+    console.log('Primeros IDs disponibles:', productos.slice(0, 10).map(p => obtenerIdProducto(p)));
     
     // Buscar el producto por ID (comparar IDs normalizados)
     const producto = productos.find(p => {
@@ -80,21 +109,29 @@ async function cargarProducto() {
 
     if (!producto) {
       console.log('Producto no encontrado. ID buscado:', productIdNormalized);
-      console.log('IDs disponibles:', productos.slice(0, 5).map(p => obtenerIdProducto(p)));
+      console.log('Todos los IDs disponibles:', productos.map(p => obtenerIdProducto(p)));
       mostrarError();
       return;
     }
+
+    console.log('Producto encontrado:', producto.Nombre || 'Sin nombre');
 
     // Enriquecer producto con datos extendidos
     productoActual = enriquecerProducto(producto);
     
     // Mostrar producto
     mostrarProducto(productoActual);
-    loader.style.display = 'none';
-    productSection.style.display = 'block';
+    
+    // Ocultar loader y mostrar sección
+    if (loader) loader.style.display = 'none';
+    if (productSection) productSection.style.display = 'block';
+    
+    // Inicializar eventos después de cargar el producto
+    inicializarEventos();
 
   } catch (error) {
     console.error('Error al cargar producto:', error);
+    console.error('Stack trace:', error.stack);
     mostrarError();
   }
 }
@@ -214,9 +251,9 @@ function mostrarError() {
   const productSection = document.getElementById('productDetailSection');
   const errorSection = document.getElementById('productErrorSection');
   
-  loader.style.display = 'none';
-  productSection.style.display = 'none';
-  errorSection.style.display = 'block';
+  if (loader) loader.style.display = 'none';
+  if (productSection) productSection.style.display = 'none';
+  if (errorSection) errorSection.style.display = 'block';
 }
 
 /**
@@ -277,20 +314,37 @@ function comprarProducto() {
 }
 
 /**
- * Inicializar eventos
+ * Inicializar eventos (solo una vez)
  */
+let eventosInicializados = false;
+
 function inicializarEventos() {
-  // Botones de cantidad
-  document.getElementById('increaseQuantity').addEventListener('click', aumentarCantidad);
-  document.getElementById('decreaseQuantity').addEventListener('click', disminuirCantidad);
+  // Evitar inicializar eventos múltiples veces
+  if (eventosInicializados) return;
   
-  // Input de cantidad
+  const increaseBtn = document.getElementById('increaseQuantity');
+  const decreaseBtn = document.getElementById('decreaseQuantity');
   const quantityInput = document.getElementById('productQuantity');
-  quantityInput.addEventListener('change', actualizarCantidad);
-  quantityInput.addEventListener('blur', actualizarCantidad);
+  const buyButton = document.getElementById('buyNowButton');
   
-  // Botón de compra
-  document.getElementById('buyNowButton').addEventListener('click', comprarProducto);
+  if (increaseBtn) {
+    increaseBtn.addEventListener('click', aumentarCantidad);
+  }
+  
+  if (decreaseBtn) {
+    decreaseBtn.addEventListener('click', disminuirCantidad);
+  }
+  
+  if (quantityInput) {
+    quantityInput.addEventListener('change', actualizarCantidad);
+    quantityInput.addEventListener('blur', actualizarCantidad);
+  }
+  
+  if (buyButton) {
+    buyButton.addEventListener('click', comprarProducto);
+  }
+  
+  eventosInicializados = true;
 }
 
 /**
@@ -300,7 +354,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Esperar a que main.js inyecte los componentes
   setTimeout(function() {
     cargarProducto();
-    inicializarEventos();
   }, 100);
 });
 
