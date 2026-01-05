@@ -1448,7 +1448,8 @@ main {
 .trust-bar {
   background-color: var(--color-background);
   padding: var(--spacing-xl) 0;
-  border-bottom: 1px solid rgba(139, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .trust-bar-container {
@@ -1457,34 +1458,53 @@ main {
   padding: 0 var(--spacing-md);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--spacing-lg);
+  gap: var(--spacing-xl);
 }
 
 .trust-item {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--spacing-sm);
+  gap: var(--spacing-md);
   text-align: center;
-  padding: var(--spacing-md);
-  transition: transform var(--transition-fast);
+  padding: var(--spacing-lg);
+  transition: all var(--transition-normal);
 }
 
 .trust-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
 }
 
-.trust-icon {
-  font-size: 3rem;
-  display: block;
+.trust-item:hover .trust-icon-wrapper {
+  transform: scale(1.05);
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.trust-icon-wrapper {
+  width: 80px;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.03);
+  transition: all var(--transition-normal);
   margin-bottom: var(--spacing-xs);
 }
 
-.trust-text {
-  font-family: var(--font-body);
-  font-size: 1.1rem;
-  font-weight: 600;
+.trust-icon {
+  font-size: 2rem;
   color: var(--color-text);
+  display: block;
+}
+
+.trust-text {
+  font-family: var(--font-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--color-text);
+  letter-spacing: 0.3px;
+  line-height: 1.4;
 }
 
 /* ========================================
@@ -1519,7 +1539,7 @@ main {
   }
 
   .trust-bar {
-    padding: 15px 0;
+    padding: var(--spacing-lg) 0;
   }
 
   .trust-bar-container {
@@ -1529,22 +1549,31 @@ main {
   }
 
   .trust-item {
-    padding: 8px 4px;
-    gap: 4px;
+    padding: var(--spacing-sm);
+    gap: var(--spacing-xs);
   }
 
   .trust-item:hover {
     transform: none;
   }
 
-  .trust-icon {
-    font-size: 24px;
+  .trust-item:hover .trust-icon-wrapper {
+    transform: none;
+  }
+
+  .trust-icon-wrapper {
+    width: 60px;
+    height: 60px;
     margin-bottom: 0;
   }
 
+  .trust-icon {
+    font-size: 1.5rem;
+  }
+
   .trust-text {
-    font-size: 0.7rem;
-    line-height: 1.2;
+    font-size: 0.75rem;
+    line-height: 1.3;
   }
 }
 
