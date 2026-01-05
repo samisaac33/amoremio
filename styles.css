@@ -750,7 +750,6 @@ main {
 
   .footer-container {
     padding: 0;
-    padding-bottom: 100px !important;
   }
 
   .footer-content {
@@ -2237,10 +2236,6 @@ main {
     box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
     z-index: 2147483647 !important;
     margin-top: 0;
-    /* Forzar que esté siempre visible por encima de todo */
-    transform: translateZ(0);
-    -webkit-transform: translateZ(0);
-    will-change: transform;
   }
 
   .product-buy-btn {
