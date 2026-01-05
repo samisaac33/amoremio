@@ -149,6 +149,31 @@ function mostrarProducto(producto) {
     idealForList.appendChild(li);
   }
 
+  // Por qué elegir
+  const whyChooseList = document.getElementById('productWhyChoose');
+  if (whyChooseList) {
+    whyChooseList.innerHTML = '';
+    if (producto.whyChoose && Array.isArray(producto.whyChoose) && producto.whyChoose.length > 0) {
+      producto.whyChoose.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        whyChooseList.appendChild(li);
+      });
+    } else {
+      const defaultWhyChoose = generarWhyChoose ? generarWhyChoose(producto) : [
+        'Diseño exclusivo y elegante.',
+        'Flores frescas y de alta calidad.',
+        'Entrega a domicilio inmediata y confiable.',
+        'Opción para personalizar con mensaje.'
+      ];
+      defaultWhyChoose.forEach(item => {
+        const li = document.createElement('li');
+        li.textContent = item;
+        whyChooseList.appendChild(li);
+      });
+    }
+  }
+
   // Simbolismo
   document.getElementById('productSymbolism').textContent = producto.symbolism || 'Las flores son un lenguaje universal del corazón.';
 

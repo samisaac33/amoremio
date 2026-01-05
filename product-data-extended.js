@@ -64,39 +64,41 @@ function generarIncludes(producto) {
   if (categoria === 'Ramos') {
     // Para ramos, variar el número de rosas/flores según el nombre
     if (nombre.toLowerCase().includes('12') || nombre.toLowerCase().includes('doce')) {
-      includes.push('12 Rosas Premium');
+      includes.push('12 rosas rojas frescas de alta calidad.');
     } else if (nombre.toLowerCase().includes('24') || nombre.toLowerCase().includes('veinticuatro')) {
-      includes.push('24 Rosas Premium');
+      includes.push('24 rosas rojas frescas de alta calidad.');
+    } else if (nombre.toLowerCase().includes('50') || nombre.toLowerCase().includes('cincuenta')) {
+      includes.push('50-55 rosas rojas frescas de alta calidad.');
     } else if (nombre.toLowerCase().includes('6') || nombre.toLowerCase().includes('seis')) {
-      includes.push('6 Rosas Premium');
+      includes.push('6 rosas rojas frescas de alta calidad.');
     } else {
-      includes.push('Rosas Premium Seleccionadas');
+      includes.push('Rosas rojas frescas de alta calidad.');
     }
-    includes.push('Follaje Natural de Complemento');
-    includes.push('Envoltura Elegante');
-    includes.push('Tarjeta de Mensaje Personalizada');
+    includes.push('Base de vidrio color crema');
+    includes.push('Medida: 32 cm alto x 22 cm ancho.');
+    includes.push('Duración aproximada: 3-5 días.');
   } else if (categoria === 'Arreglos Especiales') {
-    includes.push('Flores Frescas Seleccionadas');
-    includes.push('Diseño Artístico Único');
-    includes.push('Base Decorativa');
-    includes.push('Tarjeta de Mensaje');
+    includes.push('Flores frescas seleccionadas');
+    includes.push('Diseño artístico único');
+    includes.push('Base decorativa');
+    includes.push('Tarjeta de mensaje');
     if (nombre.toLowerCase().includes('grande') || nombre.toLowerCase().includes('xl')) {
-      includes.push('Elementos Decorativos Adicionales');
+      includes.push('Elementos decorativos adicionales');
     }
   } else if (categoria === 'Arreglos en Floreros') {
-    includes.push('Flores Frescas en Florero');
-    includes.push('Florero de Alta Calidad');
-    includes.push('Diseño Profesional');
-    includes.push('Tarjeta de Mensaje');
+    includes.push('Flores frescas en florero');
+    includes.push('Florero de alta calidad');
+    includes.push('Diseño profesional');
+    includes.push('Tarjeta de mensaje');
   } else if (categoria === 'Arreglos Fúnebres') {
-    includes.push('Corona Floral Respetuosa');
-    includes.push('Flores Seleccionadas con Cuidado');
-    includes.push('Base Sólida y Elegante');
-    includes.push('Cinta de Condolencias');
+    includes.push('Corona floral respetuosa');
+    includes.push('Flores seleccionadas con cuidado');
+    includes.push('Base sólida y elegante');
+    includes.push('Cinta de condolencias');
   } else {
-    includes.push('Flores Frescas');
-    includes.push('Diseño Profesional');
-    includes.push('Tarjeta de Mensaje');
+    includes.push('Flores frescas');
+    includes.push('Diseño profesional');
+    includes.push('Tarjeta de mensaje');
   }
   
   return includes;
@@ -165,7 +167,7 @@ function generarSymbolism(producto) {
   }
   
   if (nombre.includes('rojo') || nombre.includes('red')) {
-    return 'Las rosas rojas simbolizan el amor apasionado y el deseo, expresando sentimientos profundos y compromiso emocional.';
+    return 'Rosas rojas: amor, pasión, respeto y devoción.';
   }
   if (nombre.includes('rosa') || nombre.includes('pink')) {
     return 'Las rosas rosadas representan la gratitud, la admiración y el cariño tierno, perfectas para expresar aprecio y afecto sincero.';
@@ -190,6 +192,18 @@ function generarSymbolism(producto) {
 }
 
 /**
+ * Generar lista de "Por qué elegir"
+ */
+function generarWhyChoose(producto) {
+  return [
+    'Diseño exclusivo y elegante.',
+    'Flores frescas y de alta calidad.',
+    'Entrega a domicilio inmediata y confiable.',
+    'Opción para personalizar con mensaje.'
+  ];
+}
+
+/**
  * Enriquecer un producto con datos extendidos
  * @param {Object} producto - Producto base desde la API
  * @returns {Object} Producto enriquecido con datos adicionales
@@ -199,7 +213,7 @@ function enriquecerProducto(producto) {
   const descripcionCorta = obtenerDescripcionCorta(producto);
   
   // Si el producto ya tiene datos extendidos, mantenerlos
-  if (producto.fullDescription && producto.includes && producto.idealFor && producto.symbolism) {
+  if (producto.fullDescription && producto.includes && producto.idealFor && producto.symbolism && producto.whyChoose) {
     return producto;
   }
   
@@ -209,6 +223,7 @@ function enriquecerProducto(producto) {
     fullDescription: producto.fullDescription || generarFullDescription(producto, descripcionCorta),
     includes: producto.includes || generarIncludes(producto),
     idealFor: producto.idealFor || generarIdealFor(producto),
+    whyChoose: producto.whyChoose || generarWhyChoose(producto),
     symbolism: producto.symbolism || generarSymbolism(producto)
   };
   

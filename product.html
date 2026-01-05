@@ -29,45 +29,56 @@
             <section class="product-detail-section" id="productDetailSection" style="display: none;">
                 <div class="product-detail-container">
                     <!-- Columna izquierda: Imagen -->
-                    <div class="product-detail-image">
-                        <div class="product-image-wrapper">
+                    <div class="product-detail-image-col">
+                        <div class="product-image-main-wrapper">
                             <img id="productDetailImage" src="" alt="" class="product-main-image" loading="eager">
-                            <span id="productBadge" class="product-detail-badge" style="display: none;"></span>
                         </div>
                     </div>
 
                     <!-- Columna derecha: Información -->
-                    <div class="product-detail-info">
+                    <div class="product-detail-info-col">
+                        <!-- Título del producto -->
                         <h1 id="productDetailName" class="product-detail-title"></h1>
                         
-                        <div class="product-detail-price" id="productDetailPrice"></div>
+                        <!-- Precio -->
+                        <div class="product-price-wrapper">
+                            <span id="productDetailPrice" class="product-detail-price"></span>
+                            <span class="product-tax-info">IVA incluido</span>
+                        </div>
 
+                        <!-- Descripción principal -->
                         <div class="product-detail-description">
                             <p id="productFullDescription"></p>
                         </div>
 
-                        <!-- Lista de componentes -->
-                        <div class="product-detail-section-info">
-                            <h3 class="product-detail-subtitle">Incluye:</h3>
+                        <!-- Que incluye -->
+                        <div class="product-info-section">
+                            <h3 class="product-section-title">Que incluye el ramo de flores</h3>
                             <ul id="productIncludes" class="product-detail-list"></ul>
                         </div>
 
-                        <!-- Ocasiones ideales -->
-                        <div class="product-detail-section-info">
-                            <h3 class="product-detail-subtitle">Ideal para:</h3>
+                        <!-- Ideal para -->
+                        <div class="product-info-section">
+                            <h3 class="product-section-title">Ideal para regalar en:</h3>
                             <ul id="productIdealFor" class="product-detail-list"></ul>
                         </div>
 
+                        <!-- Por qué elegir -->
+                        <div class="product-info-section">
+                            <h3 class="product-section-title">¿Porque elegir a la Florería?</h3>
+                            <ul id="productWhyChoose" class="product-detail-list"></ul>
+                        </div>
+
                         <!-- Simbolismo -->
-                        <div class="product-detail-section-info">
-                            <h3 class="product-detail-subtitle">Simbolismo:</h3>
+                        <div class="product-info-section">
+                            <h3 class="product-section-title">Simbolismo</h3>
                             <p id="productSymbolism" class="product-symbolism-text"></p>
                         </div>
 
-                        <!-- Cantidad y botón de compra -->
-                        <div class="product-detail-actions">
-                            <div class="product-quantity-selector">
-                                <label for="productQuantity" class="quantity-label">Cantidad:</label>
+                        <!-- Acciones: Cantidad y Comprar -->
+                        <div class="product-actions-wrapper">
+                            <div class="product-quantity-wrapper">
+                                <label for="productQuantity" class="quantity-label-hidden">Cantidad</label>
                                 <div class="quantity-controls">
                                     <button type="button" class="quantity-btn" id="decreaseQuantity" aria-label="Disminuir cantidad">
                                         <i class="fas fa-minus"></i>
@@ -79,9 +90,8 @@
                                 </div>
                             </div>
 
-                            <button id="buyNowButton" class="product-buy-button">
-                                <i class="fab fa-whatsapp"></i>
-                                Comprar Ahora
+                            <button id="buyNowButton" class="product-buy-btn">
+                                Comprar
                             </button>
                         </div>
 
@@ -111,4 +121,3 @@
     <script src="product.js"></script>
 </body>
 </html>
-
