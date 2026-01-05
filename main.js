@@ -25,9 +25,9 @@ function generateNavbar() {
   const carritoCount = getCarritoCount();
   
   const menuItems = [
-    { text: 'Cumpleaños', categoria: 'Cumpleaños' },
-    { text: 'Aniversario', categoria: 'Aniversario' },
-    { text: 'Condolencias', categoria: 'Condolencias' }
+    { text: 'Cumpleaños', categoria: 'Todos' },
+    { text: 'Aniversario', categoria: 'Todos' },
+    { text: 'Condolencias', categoria: 'Arreglos Fúnebres' }
   ];
 
   const navLinksHTML = menuItems.map(item => 
