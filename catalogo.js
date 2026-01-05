@@ -58,6 +58,13 @@ async function cargarProductos() {
       return;
     }
 
+    // Guardar productos en localStorage para caché rápido
+    try {
+      localStorage.setItem('catalogo_productos', JSON.stringify(productos));
+    } catch (error) {
+      console.warn('No se pudo guardar productos en localStorage:', error);
+    }
+
     // Inicializar filtro a "Todos" al cargar y asegurar que el botón esté activo
     categoriaFiltro = 'Todos';
     

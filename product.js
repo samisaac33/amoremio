@@ -63,10 +63,26 @@ function obtenerIdProducto(producto) {
 }
 
 /**
- * Cargar productos desde la API
+ * Obtener productos desde localStorage (caché) o desde la API
  * @returns {Promise<Array>} Array de productos
  */
 async function fetchProductsFromSheet() {
+  // PRIORIDAD 1: Intentar leer desde localStorage (caché instantáneo)
+  try {
+    const cachedData = localStorage.getItem('catalogo_productos');
+    if (cachedData) {
+      const productos = JSON.parse(cachedData);
+      if (Array.isArray(productos) && productos.length > 0) {
+        console.log('Productos cargados desde caché (localStorage):', productos.length);
+        return productos;
+      }
+    }
+  } catch (error) {
+    console.warn('Error al leer caché de localStorage:', error);
+  }
+
+  // PRIORIDAD 2: Si no hay caché, hacer fetch a la API
+  console.log('Cargando productos desde la API...');
   const response = await fetch(URL_API);
   
   if (!response.ok) {
@@ -76,11 +92,18 @@ async function fetchProductsFromSheet() {
   const data = await response.json();
   const productos = Array.isArray(data) ? data : [];
   
+  // Guardar en localStorage para próximas cargas
+  try {
+    localStorage.setItem('catalogo_productos', JSON.stringify(productos));
+  } catch (error) {
+    console.warn('No se pudo guardar productos en localStorage:', error);
+  }
+  
   return productos;
 }
 
 /**
- * Cargar producto desde la API
+ * Cargar producto (priorizando caché local)
  */
 async function cargarProducto() {
   const loader = document.getElementById('loader');
@@ -98,19 +121,63 @@ async function cargarProducto() {
 
   console.log('ID buscado:', productId);
 
+  // PRIORIDAD 1: Intentar cargar desde localStorage (instantáneo, sin loader)
   try {
-    // Mostrar loader
+    const cachedData = localStorage.getItem('catalogo_productos');
+    if (cachedData) {
+      const productos = JSON.parse(cachedData);
+      if (Array.isArray(productos) && productos.length > 0) {
+        // Ocultar loader inmediatamente si existe
+        if (loader) loader.style.display = 'none';
+        if (errorSection) errorSection.style.display = 'none';
+        
+        // Buscar producto en caché
+        const idBuscado = String(productId).trim().toLowerCase();
+        const producto = productos.find(p => {
+          const idProducto = obtenerIdProducto(p);
+          return idProducto === idBuscado;
+        });
+        
+        if (producto) {
+          console.log('✅ Producto encontrado en caché (carga instantánea)');
+          
+          // Enriquecer producto con datos extendidos
+          productoActual = enriquecerProducto(producto);
+          
+          // Mostrar producto inmediatamente
+          mostrarProducto(productoActual);
+          
+          // Mostrar sección del producto
+          if (productSection) productSection.style.display = 'block';
+          
+          // Inicializar eventos
+          if (!eventosInicializados) {
+            inicializarEventos();
+            eventosInicializados = true;
+          }
+          
+          return; // Salir aquí, no hacer fetch
+        }
+      }
+    }
+  } catch (error) {
+    console.warn('Error al leer caché:', error);
+  }
+
+  // PRIORIDAD 2: Si no hay caché o no se encontró el producto, mostrar loader y hacer fetch
+  try {
+    // Mostrar loader solo si no encontramos en caché
     if (loader) loader.style.display = 'flex';
     if (productSection) productSection.style.display = 'none';
     if (errorSection) errorSection.style.display = 'none';
 
-    // Paso 2: Cargar productos desde la API (esperar a que termine)
+    // Cargar productos desde la API (o caché si fetchProductsFromSheet lo maneja)
     const productos = await fetchProductsFromSheet();
     
     console.log('Productos disponibles:', productos.length);
     
     if (productos.length === 0) {
-      console.log('No se encontraron productos en la API');
+      console.log('No se encontraron productos');
       mostrarError();
       return;
     }
