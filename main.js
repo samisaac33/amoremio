@@ -29,46 +29,48 @@ function generateNavbar() {
     { text: 'Condolencias', categoria: 'Condolencias' }
   ];
 
-  const menuLinks = menuItems.map(item => 
-    `<li><a href="catalogo.html?categoria=${encodeURIComponent(item.categoria)}" class="menu-link" data-categoria="${item.categoria}">${item.text}</a></li>`
+  const navLinksHTML = menuItems.map(item => 
+    `<a href="catalogo.html?categoria=${encodeURIComponent(item.categoria)}" class="nav-link">${item.text}</a>`
   ).join('');
 
   return `
-    <header class="navbar">
-      <div class="navbar-container">
-        <div class="navbar-left">
-          <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú" aria-expanded="false">
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-            <span class="hamburger-line"></span>
-          </button>
-          <a href="index.html" class="navbar-logo">
-            <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="nav-logo-img">
-            Amore Mío
-          </a>
-        </div>
-        <nav class="navbar-nav" id="navbarNav">
-          <!-- Cabecera del menú móvil -->
-          <div class="mobile-menu-header">
-            <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
-              <i class="fas fa-times"></i>
-            </button>
-          </div>
-          <!-- Lista de enlaces -->
-          <ul class="navbar-menu" id="navbarMenu">
-            ${menuLinks}
-          </ul>
-          <div class="mega-menu-dropdown" id="megaMenu">
-            <div class="mega-menu-content" id="megaMenuContent">
-              <!-- Contenido se inyecta dinámicamente -->
-            </div>
-          </div>
-        </nav>
-        <a href="carrito.html" class="navbar-cart">
+    <header class="header">
+      <!-- Logo - Izquierda -->
+      <a href="index.html" class="logo">
+        <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="logo-img">
+        <span class="logo-text">Amore Mío</span>
+      </a>
+
+      <!-- Navegación - Centro (Solo Desktop) -->
+      <nav class="nav-links" id="navLinks">
+        ${navLinksHTML}
+      </nav>
+
+      <!-- Carrito y Hamburguesa - Derecha -->
+      <div class="header-right">
+        <a href="carrito.html" class="cart-icon">
           <i class="fas fa-shopping-bag"></i>
           ${carritoCount > 0 ? `<span class="cart-count">${carritoCount}</span>` : ''}
         </a>
+        <button class="hamburger" id="hamburger" aria-label="Abrir menú" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
       </div>
+
+      <!-- Menú móvil (oculto por defecto) -->
+      <nav class="mobile-nav" id="mobileNav">
+        <div class="mobile-nav-header">
+          <button class="mobile-nav-close" id="mobileNavClose" aria-label="Cerrar menú">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <div class="mobile-nav-links">
+          ${navLinksHTML}
+        </div>
+      </nav>
+      <div class="mobile-nav-overlay" id="mobileNavOverlay"></div>
     </header>
   `;
 }
@@ -231,43 +233,12 @@ function generarMegaMenuContent(categoria, productos) {
 }
 
 /**
- * Inicializar mega menu
+ * Inicializar mega menu (deshabilitado - usando navegación simple)
  */
 function inicializarMegaMenu() {
-  const menuLinks = document.querySelectorAll('.menu-link');
-  const megaMenu = document.getElementById('megaMenu');
-  const megaMenuContent = document.getElementById('megaMenuContent');
-  
-  if (!megaMenu || !megaMenuContent) return;
-  
-  let productosDisponibles = [];
-  
-  // Cargar productos cuando se necesiten
-  menuLinks.forEach(link => {
-    link.addEventListener('mouseenter', async function(e) {
-      e.preventDefault();
-      const categoria = this.dataset.categoria;
-      
-      // Cargar productos si no están disponibles
-      if (productosDisponibles.length === 0) {
-        productosDisponibles = await cargarProductosParaMegaMenu();
-      }
-      
-      // Generar y mostrar contenido
-      megaMenuContent.innerHTML = generarMegaMenuContent(categoria, productosDisponibles);
-      megaMenu.style.opacity = '1';
-      megaMenu.style.visibility = 'visible';
-    });
-  });
-  
-  // Ocultar al salir del menú
-  const nav = document.querySelector('.navbar-nav');
-  if (nav) {
-    nav.addEventListener('mouseleave', function() {
-      megaMenu.style.opacity = '0';
-      megaMenu.style.visibility = 'hidden';
-    });
-  }
+  // Mega menu deshabilitado - usando navegación directa
+  // Esta función se mantiene por compatibilidad pero no hace nada
+  return;
 }
 
 /**
@@ -485,44 +456,36 @@ window.updateCarritoCount = function() {
  * Inicializar menú móvil hamburguesa
  */
 function inicializarMenuMovil() {
-  const menuToggle = document.getElementById('mobileMenuToggle');
-  const navbarNav = document.getElementById('navbarNav');
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileNavOverlay = document.getElementById('mobileNavOverlay');
+  const mobileNavClose = document.getElementById('mobileNavClose');
   const body = document.body;
   
-  if (!menuToggle || !navbarNav) return;
-  
-  // Crear overlay si no existe
-  let overlay = document.querySelector('.mobile-menu-overlay');
-  if (!overlay) {
-    overlay = document.createElement('div');
-    overlay.className = 'mobile-menu-overlay';
-    body.appendChild(overlay);
-  }
+  if (!hamburger || !mobileNav || !mobileNavOverlay) return;
   
   let isMenuOpen = false;
   
   function abrirMenu() {
     isMenuOpen = true;
-    navbarNav.classList.add('mobile-menu-open');
-    menuToggle.classList.add('active');
-    menuToggle.setAttribute('aria-expanded', 'true');
-    overlay.classList.add('active');
+    mobileNav.classList.add('active');
+    hamburger.classList.add('active');
+    hamburger.setAttribute('aria-expanded', 'true');
+    mobileNavOverlay.classList.add('active');
     body.style.overflow = 'hidden';
-    // Asegurar que el menú esté por encima
-    navbarNav.style.zIndex = '10000';
   }
   
   function cerrarMenu() {
     isMenuOpen = false;
-    navbarNav.classList.remove('mobile-menu-open');
-    menuToggle.classList.remove('active');
-    menuToggle.setAttribute('aria-expanded', 'false');
-    overlay.classList.remove('active');
+    mobileNav.classList.remove('active');
+    hamburger.classList.remove('active');
+    hamburger.setAttribute('aria-expanded', 'false');
+    mobileNavOverlay.classList.remove('active');
     body.style.overflow = '';
   }
   
   // Toggle del menú
-  menuToggle.addEventListener('click', function(e) {
+  hamburger.addEventListener('click', function(e) {
     e.preventDefault();
     e.stopPropagation();
     if (isMenuOpen) {
@@ -532,66 +495,52 @@ function inicializarMenuMovil() {
     }
   });
   
-  // Cerrar al hacer clic en el overlay (solo fuera del menú)
-  overlay.addEventListener('click', function(e) {
-    // Calcular si el click fue fuera del área del menú
-    const menuWidth = window.innerWidth * 0.75;
-    const maxMenuWidth = 300;
-    const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
+  // Cerrar al hacer clic en el overlay
+  if (mobileNavOverlay) {
+    mobileNavOverlay.addEventListener('click', function(e) {
+      const menuWidth = window.innerWidth * 0.75;
+      const maxMenuWidth = 300;
+      const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
+      
+      if (e.clientX > actualMenuWidth && isMenuOpen) {
+        cerrarMenu();
+      }
+    });
     
-    if (e.clientX > actualMenuWidth && isMenuOpen) {
-      cerrarMenu();
-    }
-  });
-  
-  overlay.addEventListener('touchstart', function(e) {
-    const menuWidth = window.innerWidth * 0.75;
-    const maxMenuWidth = 300;
-    const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
-    
-    if (e.touches[0] && e.touches[0].clientX > actualMenuWidth && isMenuOpen) {
-      cerrarMenu();
-    }
-  });
+    mobileNavOverlay.addEventListener('touchstart', function(e) {
+      const menuWidth = window.innerWidth * 0.75;
+      const maxMenuWidth = 300;
+      const actualMenuWidth = Math.min(menuWidth, maxMenuWidth);
+      
+      if (e.touches[0] && e.touches[0].clientX > actualMenuWidth && isMenuOpen) {
+        cerrarMenu();
+      }
+    });
+  }
   
   // Cerrar al hacer clic en el botón X
-  const closeButton = document.getElementById('mobileMenuClose');
-  if (closeButton) {
-    closeButton.addEventListener('click', function(e) {
+  if (mobileNavClose) {
+    mobileNavClose.addEventListener('click', function(e) {
       e.preventDefault();
       e.stopPropagation();
       cerrarMenu();
     });
   }
   
-  // Manejar clicks en los enlaces del menú
-  const menuLinks = navbarNav.querySelectorAll('.navbar-menu a');
-  menuLinks.forEach(link => {
-    link.addEventListener('click', function(e) {
-      const href = this.getAttribute('href');
-      // Cerrar el menú inmediatamente
+  // Manejar clicks en los enlaces del menú móvil
+  const mobileNavLinks = mobileNav.querySelectorAll('.mobile-nav-links .nav-link');
+  mobileNavLinks.forEach(link => {
+    link.addEventListener('click', function() {
       cerrarMenu();
-      // Permitir navegación normal - no prevenir default si hay href válido
-      if (!href || href === '#' || href === '') {
-        e.preventDefault();
-      }
-      // La navegación se hará automáticamente
     });
   });
   
-  // Prevenir que clicks dentro del menú cierren el overlay
-  navbarNav.addEventListener('click', function(e) {
-    e.stopPropagation();
-  });
-  
-  // Prevenir propagación también en elementos hijos
-  navbarNav.addEventListener('touchstart', function(e) {
-    e.stopPropagation();
-  });
-  
-  navbarNav.addEventListener('touchend', function(e) {
-    e.stopPropagation();
-  });
+  // Prevenir propagación de clicks dentro del menú
+  if (mobileNav) {
+    mobileNav.addEventListener('click', function(e) {
+      e.stopPropagation();
+    });
+  }
 }
 
 // Inicializar menú móvil después de inyectar componentes
@@ -606,3 +555,4 @@ if (document.readyState === 'loading') {
     inicializarMenuMovil();
   }, 150);
 }
+
