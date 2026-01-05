@@ -17,8 +17,11 @@ function obtenerIdProductoDesdeURL() {
   const params = new URLSearchParams(window.location.search);
   const id = params.get('id');
   if (!id) return null;
-  // Decodificar y normalizar el ID
-  return decodeURIComponent(id).trim().toUpperCase();
+  // Decodificar el ID (por si viene codificado)
+  const idDecodificado = decodeURIComponent(id);
+  // Normalización extrema: String, trim, pero mantener el formato original aquí
+  // La normalización completa (toLowerCase) se hace en la comparación
+  return String(idDecodificado).trim();
 }
 
 /**
@@ -35,10 +38,29 @@ function formatearPrecio(precio) {
 }
 
 /**
- * Obtener ID normalizado del producto
+ * Obtener ID normalizado del producto (búsqueda robusta)
  */
 function obtenerIdProducto(producto) {
-  return String(producto.id || producto.ID || producto.Id || producto.codigo || producto.Codigo || producto.CODIGO || producto['Código'] || '').trim().toUpperCase();
+  // Intentar múltiples propiedades posibles
+  const idRaw = producto.id || 
+                producto.ID || 
+                producto.Id || 
+                producto.idProducto ||
+                producto.IDProducto ||
+                producto.IdProducto ||
+                producto.codigo || 
+                producto.Codigo || 
+                producto.CODIGO || 
+                producto['Código'] ||
+                producto.code ||
+                producto.Code ||
+                producto.CODE ||
+                producto['Código Producto'] ||
+                producto['CódigoProducto'] ||
+                '';
+  
+  // Normalización extrema: String, trim, toLowerCase
+  return String(idRaw).trim().toLowerCase();
 }
 
 /**
@@ -95,21 +117,52 @@ async function cargarProducto() {
     }
 
     // Paso 3: Buscar el producto después de que los datos estén disponibles
-    // Normalizar el ID de búsqueda
-    const productIdNormalized = productId.trim().toUpperCase();
+    // Normalización extrema del ID de búsqueda: String, trim, toLowerCase
+    const idBuscado = String(productId).trim().toLowerCase();
     
-    console.log('Buscando producto con ID normalizado:', productIdNormalized);
-    console.log('Primeros IDs disponibles:', productos.slice(0, 10).map(p => obtenerIdProducto(p)));
+    console.log('ID buscado (URL):', idBuscado);
+    console.log('Primeros 3 productos en memoria:', productos.slice(0, 3).map(p => ({
+      nombre: p.Nombre || p.nombre || 'Sin nombre',
+      idPropiedades: {
+        id: p.id,
+        ID: p.ID,
+        Id: p.Id,
+        codigo: p.codigo,
+        Codigo: p.Codigo,
+        CODIGO: p.CODIGO
+      },
+      idNormalizado: obtenerIdProducto(p)
+    })));
     
-    // Buscar el producto por ID (comparar IDs normalizados)
+    // Búsqueda 'a prueba de balas': comparar IDs normalizados (String, trim, toLowerCase)
     const producto = productos.find(p => {
-      const id = obtenerIdProducto(p);
-      return id === productIdNormalized;
+      const idProducto = obtenerIdProducto(p);
+      const coincide = idProducto === idBuscado;
+      
+      // Log detallado para los primeros 3 productos
+      if (productos.indexOf(p) < 3) {
+        console.log(`Comparando: "${idProducto}" === "${idBuscado}" ? ${coincide}`);
+      }
+      
+      return coincide;
     });
 
     if (!producto) {
-      console.log('Producto no encontrado. ID buscado:', productIdNormalized);
-      console.log('Todos los IDs disponibles:', productos.map(p => obtenerIdProducto(p)));
+      console.error('❌ Producto NO encontrado');
+      console.log('ID buscado (normalizado):', idBuscado);
+      console.log('Todos los IDs disponibles (normalizados):', productos.map(p => obtenerIdProducto(p)));
+      console.log('Muestra de productos con sus propiedades:', productos.slice(0, 5).map(p => ({
+        nombre: p.Nombre || p.nombre || 'Sin nombre',
+        propiedadesId: Object.keys(p).filter(k => 
+          k.toLowerCase().includes('id') || 
+          k.toLowerCase().includes('codigo') || 
+          k.toLowerCase().includes('code')
+        ).reduce((acc, k) => {
+          acc[k] = p[k];
+          return acc;
+        }, {}),
+        idNormalizado: obtenerIdProducto(p)
+      })));
       mostrarError();
       return;
     }
