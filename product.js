@@ -351,24 +351,33 @@ function mostrarError() {
 }
 
 /**
- * Comprar producto (WhatsApp)
+ * Comprar producto (Agregar al carrito y redirigir)
  */
 function comprarProducto() {
   if (!productoActual) return;
 
-  const productoId = obtenerIdProducto(productoActual);
-  const nombre = productoActual.Nombre || 'Producto';
-  const precio = formatearPrecio(productoActual.Precio);
-  
-  // Crear mensaje para WhatsApp (solo precio unitario)
-  const mensaje = `Hola, me interesa comprar:\n\n` +
-    `*${nombre}*\n` +
-    `Precio: ${precio}\n\n` +
-    `ID del producto: ${productoId}`;
-  
-  const whatsappURL = `https://wa.me/593986681447?text=${encodeURIComponent(mensaje)}`;
-  
-  window.open(whatsappURL, '_blank');
+  try {
+    // Obtener carrito actual de localStorage
+    let carrito = JSON.parse(localStorage.getItem('carrito') || '[]');
+    
+    // Inicializar cantidad si no existe
+    if (!productoActual.cantidad) {
+      productoActual.cantidad = 1;
+    }
+    
+    // Agregar producto al carrito
+    carrito.push(productoActual);
+    
+    // Guardar carrito actualizado en localStorage
+    localStorage.setItem('carrito', JSON.stringify(carrito));
+    
+    // Redirigir a la página del carrito
+    window.location.href = 'carrito.html';
+    
+  } catch (error) {
+    console.error('Error al agregar al carrito:', error);
+    alert('Error al agregar el producto al carrito. Por favor, intenta de nuevo.');
+  }
 }
 
 /**
