@@ -513,6 +513,60 @@ main {
 }
 
 /* ========================================
+   BOTÓN FLOTANTE DE WHATSAPP
+   ======================================== */
+.whatsapp-float {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 60px;
+  height: 60px;
+  background-color: #25D366;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.4);
+  z-index: 9999;
+  transition: all var(--transition-normal);
+  text-decoration: none;
+  color: #ffffff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: rgba(37, 211, 102, 0.3);
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 16px rgba(37, 211, 102, 0.6);
+  background-color: #20BA5A;
+}
+
+.whatsapp-float:active {
+  transform: scale(0.95);
+}
+
+.whatsapp-float svg {
+  width: 28px;
+  height: 28px;
+  fill: #ffffff;
+}
+
+/* Ajustes móviles */
+@media (max-width: 768px) {
+  .whatsapp-float {
+    width: 56px;
+    height: 56px;
+    bottom: 16px;
+    right: 16px;
+  }
+
+  .whatsapp-float svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ========================================
    RESPONSIVE - TABLET Y MÓVIL
    ======================================== */
 @media (max-width: 968px) {
