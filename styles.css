@@ -1511,21 +1511,33 @@ main {
     font-size: 1rem;
   }
 
+  .trust-bar {
+    padding: 15px 0;
+  }
+
   .trust-bar-container {
-    grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 0 var(--spacing-sm);
   }
 
   .trust-item {
-    padding: var(--spacing-sm);
+    padding: 8px 4px;
+    gap: 4px;
+  }
+
+  .trust-item:hover {
+    transform: none;
   }
 
   .trust-icon {
-    font-size: 2.5rem;
+    font-size: 24px;
+    margin-bottom: 0;
   }
 
   .trust-text {
-    font-size: 1rem;
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
 }
 
