@@ -1082,12 +1082,24 @@ main {
 
 .collection-filters {
   display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-lg);
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  gap: 10px;
   list-style: none;
   margin: 0 0 var(--spacing-xl) 0;
   padding: 0 var(--spacing-md);
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.collection-filters::-webkit-scrollbar {
+  display: none;
+}
+
+.collection-filters li {
+  flex-shrink: 0;
 }
 
 .collection-filters li a,
@@ -1096,20 +1108,26 @@ main {
   font-size: 0.95rem;
   color: var(--color-text-light);
   text-decoration: none;
-  transition: color var(--transition-fast);
-  background: none;
-  border: none;
-  padding: 0;
+  transition: all var(--transition-fast);
+  background-color: rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  padding: 8px 16px;
   cursor: pointer;
+  white-space: nowrap;
+  display: inline-block;
 }
 
 .collection-filters li a:hover,
 .collection-filters li button:hover {
   color: var(--color-text);
+  background-color: rgba(0, 0, 0, 0.08);
 }
 
 .collection-filters li button.active {
-  color: var(--color-text);
+  color: #FFFFFF;
+  background-color: var(--color-text);
+  border-color: var(--color-text);
   font-weight: 600;
 }
 
@@ -1279,7 +1297,8 @@ main {
   }
   
   .collection-filters {
-    gap: var(--spacing-md);
+    gap: 10px;
+    padding: 0 var(--spacing-sm);
   }
   
   .product-grid {

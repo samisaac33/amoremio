@@ -365,6 +365,8 @@ let carruselIndex = 0;
 let productosDestacadosGlobal = [];
 let todosLosProductosGlobal = []; // Almacenar todos los productos para filtrado
 let categoriaFiltroHome = 'Todos'; // Categoría actual en el home
+let autoScrollInterval = null; // Intervalo para auto-scroll
+let isCarouselPaused = false; // Estado de pausa del carrusel
 
 /**
  * Cargar productos desde la API con categorización
@@ -503,6 +505,67 @@ function inicializarFiltrosHome() {
 }
 
 /**
+ * Avanzar carrusel al siguiente
+ */
+function avanzarCarrusel() {
+  const featuredTrack = document.querySelector('.featured-carousel-track');
+  if (!featuredTrack || productosDestacadosGlobal.length === 0) return;
+
+  const firstCard = featuredTrack.querySelector('.product-card');
+  if (!firstCard) return;
+
+  const rect = firstCard.getBoundingClientRect();
+  const cardWidth = rect.width;
+  const gap = 30;
+  const scrollDistance = cardWidth + gap;
+
+  carruselIndex++;
+  
+  // Si hay pocos productos, hacer scroll circular
+  const maxIndex = Math.max(0, productosDestacadosGlobal.length - 3);
+  if (carruselIndex > maxIndex) {
+    carruselIndex = 0;
+  }
+  
+  const translateX = -(carruselIndex * scrollDistance);
+  featuredTrack.style.transform = `translateX(${translateX}px)`;
+}
+
+/**
+ * Iniciar auto-scroll del carrusel
+ */
+function iniciarAutoScroll() {
+  // Limpiar intervalo anterior si existe
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+  }
+  
+  // Solo iniciar si no está pausado
+  if (!isCarouselPaused) {
+    autoScrollInterval = setInterval(avanzarCarrusel, 3000);
+  }
+}
+
+/**
+ * Pausar auto-scroll del carrusel
+ */
+function pausarAutoScroll() {
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+  isCarouselPaused = true;
+}
+
+/**
+ * Reanudar auto-scroll del carrusel
+ */
+function reanudarAutoScroll() {
+  isCarouselPaused = false;
+  iniciarAutoScroll();
+}
+
+/**
  * Inicializar carrusel de productos destacados (infinito)
  */
 function inicializarCarruselDestacados() {
@@ -533,23 +596,7 @@ function inicializarCarruselDestacados() {
     return cardWidth + gap;
   }
 
-  newNextBtn.addEventListener('click', function() {
-    if (productosDestacadosGlobal.length === 0) return;
-    
-    carruselIndex++;
-    
-    // Si hay pocos productos, hacer scroll circular
-    const maxIndex = Math.max(0, productosDestacadosGlobal.length - 3);
-    if (carruselIndex > maxIndex) {
-      carruselIndex = 0;
-    }
-    
-    const scrollDistance = getScrollDistance();
-    const translateX = -(carruselIndex * scrollDistance);
-    featuredTrack.style.transform = `translateX(${translateX}px)`;
-  });
-
-  newPrevBtn.addEventListener('click', function() {
+  function retrocederCarrusel() {
     if (productosDestacadosGlobal.length === 0) return;
     
     carruselIndex--;
@@ -563,11 +610,65 @@ function inicializarCarruselDestacados() {
     const scrollDistance = getScrollDistance();
     const translateX = -(carruselIndex * scrollDistance);
     featuredTrack.style.transform = `translateX(${translateX}px)`;
+  }
+
+  // Limpiar auto-scroll anterior
+  if (autoScrollInterval) {
+    clearInterval(autoScrollInterval);
+    autoScrollInterval = null;
+  }
+  isCarouselPaused = false;
+
+  newNextBtn.addEventListener('click', function() {
+    pausarAutoScroll();
+    avanzarCarrusel();
+    setTimeout(function() {
+      isCarouselPaused = false;
+      iniciarAutoScroll();
+    }, 5000);
   });
+
+  newPrevBtn.addEventListener('click', function() {
+    pausarAutoScroll();
+    retrocederCarrusel();
+    setTimeout(function() {
+      isCarouselPaused = false;
+      iniciarAutoScroll();
+    }, 5000);
+  });
+
+  const featuredWrapper = document.querySelector('.featured-carousel-wrapper');
+  
+  // Pausar auto-scroll en hover (desktop)
+  if (featuredWrapper) {
+    featuredWrapper.addEventListener('mouseenter', function() {
+      pausarAutoScroll();
+    });
+    featuredWrapper.addEventListener('mouseleave', function() {
+      isCarouselPaused = false;
+      iniciarAutoScroll();
+    });
+  }
+
+  // Pausar auto-scroll en touch (móvil)
+  if (featuredTrack) {
+    featuredTrack.addEventListener('touchstart', function() {
+      pausarAutoScroll();
+    });
+    featuredTrack.addEventListener('touchend', function() {
+      setTimeout(function() {
+        isCarouselPaused = false;
+        iniciarAutoScroll();
+      }, 5000);
+    });
+  }
 
   // Inicializar posición
   featuredTrack.style.transform = 'translateX(0px)';
   carruselIndex = 0;
+
+  // Iniciar auto-scroll
+  iniciarAutoScroll();
 }
 
 // Función para actualizar el contador del carrito (disponible globalmente)
