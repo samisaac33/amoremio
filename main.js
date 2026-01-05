@@ -271,7 +271,9 @@ if (document.readyState === 'loading') {
     injectGlobalComponents();
     setTimeout(() => {
       inicializarMegaMenu();
-      cargarProductosDestacados();
+      cargarProductosDestacados('Todos');
+      inicializarFiltrosHome();
+      inicializarMenuMovil();
     }, 100);
   });
 } else {
@@ -279,7 +281,8 @@ if (document.readyState === 'loading') {
   injectGlobalComponents();
   setTimeout(() => {
     inicializarMegaMenu();
-    cargarProductosDestacados();
+    cargarProductosDestacados('Todos');
+    inicializarFiltrosHome();
   }, 100);
 }
 
@@ -360,27 +363,88 @@ function agregarAlCarritoGlobal(producto) {
 // Variable global para el índice del carrusel
 let carruselIndex = 0;
 let productosDestacadosGlobal = [];
+let todosLosProductosGlobal = []; // Almacenar todos los productos para filtrado
+let categoriaFiltroHome = 'Todos'; // Categoría actual en el home
+
+/**
+ * Cargar productos desde la API con categorización
+ */
+async function cargarProductosConCategorias() {
+  const URL_API = 'https://script.google.com/macros/s/AKfycbyfqYVWemnAfC2vbduT0x-VaIKh-D_hV7nOP9wCd1pouAvnepP05bhoj9GNBNMEs0sy/exec';
+  
+  try {
+    const response = await fetch(URL_API);
+    if (!response.ok) {
+      throw new Error(`Error HTTP: ${response.status}`);
+    }
+    
+    const data = await response.json();
+    const productos = Array.isArray(data) ? data : [];
+    
+    // Clasificación automática por prefijo
+    productos.forEach((p) => {
+      const idRaw = p.id || p.ID || p.Id || p.codigo || p.Codigo || p.CODIGO || p['Código'] || '';
+      const id = String(idRaw).trim().toUpperCase();
+      
+      if (id && id.startsWith('AF')) {
+        p.categoria = 'Arreglos Fúnebres';
+      } else if (id && id.startsWith('B')) {
+        p.categoria = 'Ramos';
+      } else if (id && id.startsWith('S')) {
+        p.categoria = 'Arreglos Especiales';
+      } else if (id && id.startsWith('J')) {
+        p.categoria = 'Arreglos en Floreros';
+      } else {
+        p.categoria = 'Sin categoría';
+      }
+    });
+    
+    return productos;
+  } catch (error) {
+    console.error('Error al cargar productos:', error);
+    return [];
+  }
+}
 
 /**
  * Cargar y renderizar productos destacados
  */
-async function cargarProductosDestacados() {
+async function cargarProductosDestacados(categoria = 'Todos') {
   const featuredTrack = document.querySelector('.featured-carousel-track');
   if (!featuredTrack) return;
 
   try {
-    // Cargar productos
-    const productos = await cargarProductosParaMegaMenu();
+    // Si no tenemos productos cargados, cargarlos
+    if (todosLosProductosGlobal.length === 0) {
+      todosLosProductosGlobal = await cargarProductosConCategorias();
+    }
     
-    if (productos.length === 0) {
+    if (todosLosProductosGlobal.length === 0) {
       featuredTrack.innerHTML = '<p class="mensaje-vacio">No hay productos disponibles</p>';
       return;
     }
 
-    // Obtener 10 productos para el carrusel
-    productosDestacadosGlobal = productos.slice(0, 10);
+    // Filtrar productos por categoría
+    let productosFiltrados = todosLosProductosGlobal;
+    if (categoria !== 'Todos') {
+      productosFiltrados = todosLosProductosGlobal.filter(producto => {
+        const categoriaProducto = (producto.categoria || '').toLowerCase().trim();
+        const categoriaFiltroLower = categoria.toLowerCase().trim();
+        return categoriaProducto === categoriaFiltroLower;
+      });
+    }
     
-    // Renderizar productos
+    if (productosFiltrados.length === 0) {
+      featuredTrack.innerHTML = '<p class="mensaje-vacio">No hay productos en esta categoría</p>';
+      carruselIndex = 0;
+      return;
+    }
+
+    // Actualizar productos globales para el carrusel
+    productosDestacadosGlobal = productosFiltrados;
+    categoriaFiltroHome = categoria;
+    
+    // Limpiar y renderizar productos
     featuredTrack.innerHTML = productosDestacadosGlobal.map((producto, index) => 
       crearTarjetaProductoHTML(producto, index)
     ).join('');
@@ -395,13 +459,47 @@ async function cargarProductosDestacados() {
       });
     });
 
-    // Inicializar carrusel
+    // Reinicializar carrusel
+    carruselIndex = 0;
+    featuredTrack.style.transform = 'translateX(0px)';
     inicializarCarruselDestacados();
 
   } catch (error) {
     console.error('Error al cargar productos destacados:', error);
     featuredTrack.innerHTML = '<p class="mensaje-vacio">Error al cargar productos</p>';
   }
+}
+
+/**
+ * Filtrar productos destacados por categoría (Home)
+ */
+function filtrarProductosDestacados(categoria) {
+  categoriaFiltroHome = categoria;
+  
+  // Actualizar botones activos
+  document.querySelectorAll('.collection-filters .filter-btn').forEach(btn => {
+    btn.classList.remove('active');
+    if (btn.dataset.filter === categoria) {
+      btn.classList.add('active');
+    }
+  });
+  
+  // Recargar productos con el filtro
+  cargarProductosDestacados(categoria);
+}
+
+/**
+ * Inicializar filtros del home
+ */
+function inicializarFiltrosHome() {
+  const filterButtons = document.querySelectorAll('.collection-filters .filter-btn');
+  
+  filterButtons.forEach(btn => {
+    btn.addEventListener('click', function() {
+      const categoria = this.dataset.filter;
+      filtrarProductosDestacados(categoria);
+    });
+  });
 }
 
 /**
@@ -413,6 +511,12 @@ function inicializarCarruselDestacados() {
   const nextBtn = document.querySelector('.featured-carousel-wrapper .carousel-btn.next-btn');
 
   if (!featuredTrack || !prevBtn || !nextBtn) return;
+
+  // Remover listeners anteriores si existen
+  const newPrevBtn = prevBtn.cloneNode(true);
+  const newNextBtn = nextBtn.cloneNode(true);
+  prevBtn.parentNode.replaceChild(newPrevBtn, prevBtn);
+  nextBtn.parentNode.replaceChild(newNextBtn, nextBtn);
 
   // Obtener la primera tarjeta para calcular su ancho real
   const firstCard = featuredTrack.querySelector('.product-card');
@@ -429,11 +533,14 @@ function inicializarCarruselDestacados() {
     return cardWidth + gap;
   }
 
-  nextBtn.addEventListener('click', function() {
+  newNextBtn.addEventListener('click', function() {
+    if (productosDestacadosGlobal.length === 0) return;
+    
     carruselIndex++;
     
-    // Si llegamos al final, volver al inicio (infinito)
-    if (carruselIndex >= productosDestacadosGlobal.length - 3) {
+    // Si hay pocos productos, hacer scroll circular
+    const maxIndex = Math.max(0, productosDestacadosGlobal.length - 3);
+    if (carruselIndex > maxIndex) {
       carruselIndex = 0;
     }
     
@@ -442,12 +549,15 @@ function inicializarCarruselDestacados() {
     featuredTrack.style.transform = `translateX(${translateX}px)`;
   });
 
-  prevBtn.addEventListener('click', function() {
+  newPrevBtn.addEventListener('click', function() {
+    if (productosDestacadosGlobal.length === 0) return;
+    
     carruselIndex--;
     
     // Si estamos al inicio, ir al final (infinito)
+    const maxIndex = Math.max(0, productosDestacadosGlobal.length - 3);
     if (carruselIndex < 0) {
-      carruselIndex = productosDestacadosGlobal.length - 4;
+      carruselIndex = maxIndex;
     }
     
     const scrollDistance = getScrollDistance();
