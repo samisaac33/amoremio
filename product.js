@@ -15,7 +15,10 @@ let cantidadActual = 1;
  */
 function obtenerIdProductoDesdeURL() {
   const params = new URLSearchParams(window.location.search);
-  return params.get('id');
+  const id = params.get('id');
+  if (!id) return null;
+  // Decodificar y normalizar el ID
+  return decodeURIComponent(id).trim().toUpperCase();
 }
 
 /**
@@ -66,13 +69,18 @@ async function cargarProducto() {
     const data = await response.json();
     const productos = Array.isArray(data) ? data : [];
     
-    // Buscar el producto por ID
+    // Normalizar el ID de búsqueda
+    const productIdNormalized = productId.trim().toUpperCase();
+    
+    // Buscar el producto por ID (comparar IDs normalizados)
     const producto = productos.find(p => {
       const id = obtenerIdProducto(p);
-      return id === productId.toUpperCase();
+      return id === productIdNormalized;
     });
 
     if (!producto) {
+      console.log('Producto no encontrado. ID buscado:', productIdNormalized);
+      console.log('IDs disponibles:', productos.slice(0, 5).map(p => obtenerIdProducto(p)));
       mostrarError();
       return;
     }
