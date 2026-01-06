@@ -2480,7 +2480,11 @@ main {
   }
 
   .catalogo-title {
-    font-size: 2.2rem;
+    font-size: 1.8rem;
+    white-space: nowrap;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .filtros-container {
