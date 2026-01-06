@@ -382,7 +382,7 @@ function crearTarjetaProducto(producto, index) {
         <div class="product-image-container">
             <img 
               src="${producto.Imagen || 'https://via.placeholder.com/400x400?text=Imagen+No+Disponible'}" 
-              alt="${producto.Nombre || 'Producto'}"
+              alt="${producto.Nombre ? `Arreglo floral ${producto.Nombre} - Amore Mío` : 'Arreglo floral de Amore Mío'}"
               class="product-image"
               loading="lazy"
               decoding="async"

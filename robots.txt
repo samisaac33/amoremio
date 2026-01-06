@@ -1,0 +1,23 @@
+# robots.txt para Amore Mío - Florería
+# Permite el rastreo completo del sitio web
+
+User-agent: *
+Allow: /
+
+# Permitir acceso a archivos estáticos
+Allow: /styles.css
+Allow: /*.js
+Allow: /*.css
+Allow: /*.jpg
+Allow: /*.png
+Allow: /*.svg
+Allow: /*.gif
+
+# No permitir rastreo de archivos de sistema
+Disallow: /node_modules/
+Disallow: /.git/
+Disallow: /.vscode/
+
+# Sitemap
+Sitemap: https://amoremiofloreria.com/sitemap.xml
+

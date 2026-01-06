@@ -268,7 +268,7 @@ function mostrarProducto(producto) {
   const productImage = document.getElementById('productDetailImage');
   if (productImage) {
     productImage.src = producto.Imagen || 'https://via.placeholder.com/600x600?text=Imagen+No+Disponible';
-    productImage.alt = producto.Nombre || 'Producto';
+    productImage.alt = producto.Nombre ? `Arreglo floral ${producto.Nombre} - Amore Mío` : 'Arreglo floral de Amore Mío';
   } else {
     console.error('No se encontró el elemento productDetailImage');
   }

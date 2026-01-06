@@ -129,7 +129,7 @@ function renderizarCarrito() {
       <div class="cart-item" data-index="${index}">
         <!-- Columna Izquierda: Imagen -->
         <div class="item-image">
-          <img src="${producto.Imagen || 'https://via.placeholder.com/80x80'}" alt="${producto.Nombre || 'Producto'}" loading="lazy">
+          <img src="${producto.Imagen || 'https://via.placeholder.com/80x80'}" alt="${producto.Nombre ? `Arreglo floral ${producto.Nombre} - Amore Mío` : 'Arreglo floral de Amore Mío'}" loading="lazy">
         </div>
         
         <!-- Columna Derecha: Información -->

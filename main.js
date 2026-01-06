@@ -38,7 +38,7 @@ function generateNavbar() {
     <header class="header">
       <!-- Logo - Izquierda -->
       <a href="index.html" class="logo">
-        <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Amore Mío" class="logo-img">
+        <img src="https://drive.google.com/thumbnail?id=1f1YnSIYlzITxxiATHoquNkm9O0dCFzKL&sz=w2000" alt="Logo Florería Amore Mío - Arreglos florales y ramos de rosas" class="logo-img">
         <span class="logo-text">Amore Mío</span>
       </a>
 
@@ -87,7 +87,7 @@ function generateFooter() {
         <div class="footer-content">
           <div class="footer-section footer-brand">
             <div class="footer-brand-block">
-              <img src="https://drive.google.com/thumbnail?id=17dNi3fIpOWX1bc4kjPTcSWySO2PPVtLS&sz=w2000" alt="Amore Mío" class="footer-logo-img">
+              <img src="https://drive.google.com/thumbnail?id=17dNi3fIpOWX1bc4kjPTcSWySO2PPVtLS&sz=w2000" alt="Logo Florería Amore Mío - Arreglos florales y ramos de rosas" class="footer-logo-img">
               <h2 class="footer-logo">Amore Mío</h2>
             </div>
             <p class="footer-tagline">Pasión en cada detalle</p>
@@ -233,7 +233,7 @@ function generarMegaMenuContent(categoria, productos) {
     html += `
       <div class="mega-menu-item">
         <a href="catalogo.html?categoria=${encodeURIComponent(categoria)}">
-          <img src="${producto.Imagen || 'https://via.placeholder.com/150x150'}" alt="${producto.Nombre}">
+          <img src="${producto.Imagen || 'https://via.placeholder.com/150x150'}" alt="${producto.Nombre ? `Arreglo floral ${producto.Nombre} - Amore Mío` : 'Arreglo floral de Amore Mío'}">
           <h4>${producto.Nombre || 'Producto'}</h4>
         </a>
       </div>
